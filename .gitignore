@@ -2,3 +2,4 @@
 .cred.json
 *~
 __pycache__/
+backup_data/
