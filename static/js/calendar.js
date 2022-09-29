@@ -47,16 +47,14 @@ const options = {
     enableYearSwitch: false,
     displayMode: "inline",
     type: 'date',
-    minDate:  new Date("2022-10-26"),
-    endDate:  new Date("2022-11-22"),
-    startDate: new Date("2022-10-26"),
-    date: new Date("2022-11-22"),
+    minDate:  new Date(early_date),
+    endDate:  new Date(late_date),
+    startDate: new Date(early_date),
+    date: new Date(late_date),
 };
+options['minDate'].addDays(1)
+options['startDate'].addDays(1)
 const calendars = bulmaCalendar.attach('[type="date"]', options);
-calendars.forEach(c=>{
-    c.date = new Date("2022-11-22")
-})
-
 $(".datepicker-nav-next","#nov").click()
 $(".datepicker-nav-next","#dec").click().click()
 $(".datepicker-nav-next","#jan").click().click().click()
