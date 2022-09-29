@@ -62,6 +62,8 @@ raw_calendar,calendar = process_calendar_data()
         
 
 def get_ip():
+    logging.error(str(request.environ))
+    logging.warning(str(request.remote_addr))
     return request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
 
 class User(UserMixin):
