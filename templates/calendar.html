@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!-- 
+  Author: William Wyatt
+  License: GNU3
+  Purpose: WebUI to annodate. 
+-->
+<html>
+
+<head>
+  <title>{{title}}</title>
+  {% include "header.html" %}
+  <link href="/static/css/bulma-calendar.css" rel="stylesheet" />
+  <script src="/static/js/bulma-calendar.js"></script>
+</head>
+
+<body>
+  <form method="POST" action="/calendar">
+    <input type="text" hidden value="{{index}}" name="index" />
+    <input type="text" hidden value="{{start_time}}" name="start_time" />
+    <input type="text" hidden value="{{key}}" name="key" />
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <div class="content">
+      <!-- TITLE SECTION -->
+      <section class="hero is-info">
+        <div class="hero-body">
+          <p class="title">
+            Please allocate 100 tokens ({{label}})
+          </p>
+          <p class="subtitle">
+            <span>You are given 100 tokens worth between $0.10 and $0.20.</span><br>
+            <span>You must distribute these tokens on either {{early_label}} for less value or {{late_label}} for more value.</span><br>
+            <span>Please distribute the tokens in the way you most prefer below.</span>
+          </p>
+        </div>
+      </section>
+
+      <!-- MAIN CONTENT SECTION-->
+      <div class="section">
+        <div class="block">
+          <div class="block has-text-centered">
+            <label class="label">
+              Date Selection
+            </label>
+            <span>Please be sure to complete the decisions behind date selection tab before clicking submit.</span><br>
+            <span>You can make your decision in any order, and can always revise you decisions before
+              submitting.</span>
+          </div>
+          <!-- MENU SECTION -->
+          <div class="tabs is-small is-boxed">
+            <ul>
+              {% for period in calendar %}
+              <li {% if period["label"]==label %}class="is-active"{%endif%}>
+                <a href="/calendar/{{loop.index0}}">
+                  {{period['label']}}</a>
+              </li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="columns is-multiline">
+          <div id="oct" class="column nogap">
+            <input type="date">
+          </div>
+          <div id="nov" class="column nogap">
+            <input type="date">
+          </div>
+          <div id="dec" class="column nogap">
+            <input type="date">
+          </div>
+          <div id="jan" class="column nogap">
+            <input type="date">
+          </div>
+          <div id="feb" class="column nogap">
+            <input type="date">
+          </div>
+        </div>
+        <!-- INTERACTIVE INTERFACE-->
+        {% for start,end in rates %}
+
+        <div class="box">
+          <!-- Maybe make the changing rate more obvious -->
+          <!-- CARD CONTENT -->
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <input required id="{{loop.index0}}-{{start}}" name="{{index}}-{{loop.index0}}-{{start}}" target="{{loop.index0}}-{{end}}"
+                  onchange="convex_handle(this)" onkeyup="convex_handle(this)" class="input inline-number is-small" type="number" step=1 min=0 max=100
+                  placeholder="50" />
+              </div>
+              <div class="level-item">
+                <label class="label">Tokens at $0.{{start}} on {{early_label}}</label>
+              </div>
+            </div>
+
+            <div class="level-right">
+              <div class="level-item">
+                <input required id="{{loop.index0}}-{{end}}" name="{{index}}-{{loop.index0}}-{{end}}" target="{{loop.index0}}-{{start}}"
+                  onchange="convex_handle(this)" onkeyup="convex_handle(this)" class="input inline-number is-small" type="number" step=1 min=0 max=100
+                  placeholder="50" />
+              </div>
+              <div class="level-item">
+                <label class="label">Tokens at $0.{{end}} on {{late_label}}</label>
+              </div>
+            </div>
+          </div>
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <label class="label">On {{early_label}}</label>
+
+              </div>
+              <div class="level-item">
+                <p>You will recieve <span id="{{loop.index0}}-{{start}}-result">$0.00</span></p>
+
+              </div>
+            </div>
+            <div class="level-right">
+              <div class="level-item">
+                <label class="label">On {{late_label}}</label>
+
+              </div>
+              <div class="level-item">
+                <p>You will recieve <span id="{{loop.index0}}-{{end}}-result">$0.00</span></p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <div class="level">
+        <div class="level-item">
+          <button class="button is-success">Submit</button>
+        </div>
+      </div>
+  </form>
+</body>
+<footer>
+  <script src="/static/js/calendar.js"></script>
+</footer>
+
+</html>

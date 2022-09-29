@@ -1,0 +1,155 @@
+[
+    {
+        "title": "Age",
+        "key": "age",
+        "question": "What is your age?",
+        "detail": "How old are you",
+        "type": "number",
+        "min": 18,
+        "max": 99
+    },
+    {
+        "title": "Gender",
+        "key": "gender",
+        "question": "What is your gender?",
+        "detail": "What do you identify as?",
+        "type": "category",
+        "categories": [
+            "Female",
+            "Male",
+            "Non-Binary",
+            "Transgender",
+            "Prefer Not to Say"
+        ]
+    },
+    {
+        "title": "State",
+        "key": "state",
+        "question": "What state are you in?",
+        "detail": "Your current state of residence.",
+        "type": "menu",
+        "categories": ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
+    },
+    {
+        "title": "Zipcode",
+        "key": "zipcode",
+        "question": "What is your zipcode?",
+        "detail": "The zipcode of your home address.",
+        "type": "zipcode"
+    },
+    {
+        "title": "Education",
+        "key": "education",
+        "question": "What is the highest level of education you have completed?",
+        "detail": "The last type of school you attended.",
+        "type": "category",
+        "categories": [
+            "No Highschool",
+            "Highschool Diploma or GED",
+            "Two-Year Degree",
+            "Four-Year Degree",
+            "Graduate or Professional Degree"
+        ]
+    },
+    {
+        "title": "Head of Household",
+        "key": "head_of_house",
+        "question": "Are you a head of household or are you a financial dependent?",
+        "detail": "",
+        "type": "category",
+        "categories": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "title": "Income",
+        "key": "income",
+        "question": "Roughly what is your household annual income?",
+        "detail": "Approximatley",
+        "type": "number",
+        "min": 0,
+        "max": 200000
+    },
+    {
+        "title": "Political Affiliation",
+        "key": "political_affiliation",
+        "question": "In general, how would you describe your own political viewpoint?",
+        "detail": "",
+        "type": "category",
+        "categories": [
+            "Very Liberal",
+            "Liberal",
+            "Moderate",
+            "Conservative",
+            "Very Conservative",
+            "Not Sure"
+        ]
+    },
+    {
+        "title": "Political Interest",
+        "key": "political_interest",
+        "question": "Would you say you follow what is going on in government and public affairs?",
+        "detail": "Some people seem to follow what is going on in government and public affairs most of the time, whether there is an election going on or not. Others are not that interested.",
+        "type": "category",
+        "categories": [
+            "Most of the time",
+            "Some of the time",
+            "Only now and then",
+            "Hardly at all",
+            "I do not know"
+        ]
+    },
+    {
+        "title": "Party Identification",
+        "key": "political_party",
+        "question": "What party do you identify with?",
+        "detail": "Generally speaking, do you think of yourself as a...",
+        "type": "category",
+        "categories": [
+            "Strong Democrat",
+            "Not very strong Democrat",
+            "Independent who leans Democrat",
+            "Independent",
+            "Independent who leans Republican",
+            "Not very strong Republican",
+            "Strong Republican"
+        ]
+    },
+    {
+        "title": "News Sources",
+        "key": "news_source",
+        "question": "What is your primary source of political news?",
+        "detail": "",
+        "type": "category",
+        "categories": [
+            "Television",
+            "Newspaper or Magazine (online or print)",
+            "Word of Mouth",
+            "TikTok",
+            "Reddit",
+            "Facebook",
+            "Instagram",
+            "Twitter",
+            "Other Social Media Platform",
+            "Other News Source",
+            "None"
+        ]
+    },
+    {
+        "title": "Employment",
+        "key": "employment",
+        "question": "What best describes your employment status?",
+        "detail": "",
+        "type": "category",
+        "categories": [
+            "Full-time Employment",
+            "Part-time Employment",
+            "Unemployed",
+            "Homemaker",
+            "Full-time Student",
+            "Retired",
+            "Other"
+        ]
+    }  
+]

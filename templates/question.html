@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!-- 
+  Author: William Wyatt
+  License: GNU3
+  Purpose: WebUI to annodate. 
+-->
+<html>
+  <head>
+    <title>{{title}}</title>
+    {% include "header.html" %}
+  </head>
+  <body>
+    <form method="POST" action="/survey">
+        <input type="text" hidden value="{{index}}" name="index" />
+        <input type="text" hidden value="{{start}}" name="start_time" />
+        <input type="text" hidden value="{{key}}" name="key" />
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <div class="content">
+      <section class="hero is-primary">
+        <div class="hero-body">
+          <p class="title">
+            {{question}}
+          </p>
+          <p class="subtitle">
+            {{detail}}
+          </p>
+        </div>
+      </section>
+      <div class="section">
+        {% if error %}
+            <div class="notification is-warning">
+                <span>{{error}}</span>
+            </div>
+        {% endif %}
+        {% if type=="number" %}
+            {% include "question_components/number.html" %}
+        {% elif type=="zipcode" %}
+            {% include "question_components/zipcode.html" %}
+        {% elif type=="category" %}
+            {% include "question_components/category.html" %}
+        {% elif type=="menu" %}
+            {% include "question_components/menu.html" %}
+        {% endif %}
+     </div>
+      <div class="section level">
+        <div class="level-left"></div>
+        <div class="level-right">
+            <div class="is-grouped">
+                <p class="control">
+                    {% if index - 1 >= 0 %}
+                    <a href="/survey/{{index-1}}" class="button is-light">
+                        Back
+                    </a>
+                    {% endif %}
+                    <button type="submit" class="button is-primary">
+                      Next
+                    </button>
+                </p>
+            </div>
+        </div>
+      </div>
+    </div>
+    </form>
+  </body>
+</html>
