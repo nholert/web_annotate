@@ -52,13 +52,11 @@ const options = {
     startDate: new Date(early_date),
     date: new Date(late_date),
 };
-options['minDate'].addDays(1)
-options['startDate'].addDays(1)
 const calendars = bulmaCalendar.attach('[type="date"]', options);
-$(".datepicker-nav-next","#nov").click()
-$(".datepicker-nav-next","#dec").click().click()
-$(".datepicker-nav-next","#jan").click().click().click()
-$(".datepicker-nav-next","#feb").click().click().click().click()
+$(".datepicker-nav-next","#second-calendar").click()
+$(".datepicker-nav-next","#third-calendar").click().click()
+$(".datepicker-nav-next","#fourth-calendar").click().click().click()
+$(".datepicker-nav-next","#fifth-calendar").click().click().click().click()
 
 $(".datepicker-nav-next").each((i,e)=>{
     $(e).css('cursor','auto').css('z-index','-1')

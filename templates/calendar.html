@@ -57,20 +57,17 @@
             </ul>
           </div>
         </div>
-        <div class="columns is-multiline">
-          <div id="oct" class="column nogap">
+        <div class="columns ">
+          <div id="first-calendar" class="column cal">
             <input type="date">
           </div>
-          <div id="nov" class="column nogap">
+          <div id="second-calendar" class="column cal">
             <input type="date">
           </div>
-          <div id="dec" class="column nogap">
+          <div id="third-calendar" class="column cal">
             <input type="date">
           </div>
-          <div id="jan" class="column nogap">
-            <input type="date">
-          </div>
-          <div id="feb" class="column nogap">
+          <div id="fourth-calendar" class="column cal">
             <input type="date">
           </div>
         </div>
@@ -136,8 +133,8 @@
 </body>
 <footer>
   <script>
-    let early_date = "{{early}}"
-    let late_date = "{{late}}"
+    let early_date = "{{early}} 17:00:00"
+    let late_date = "{{late}} 17:00:00"
   </script>
   <script src="/static/js/calendar.js"></script>
 </footer>

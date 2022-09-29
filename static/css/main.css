@@ -21,7 +21,6 @@ html,body,form{
     justify-content: center;
     align-items: center;
 }
-.nogap{
-    margin: 0;
-    padding: 0;
+.cal{
+    font-size: 8px;
 }
