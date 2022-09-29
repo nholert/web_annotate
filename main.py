@@ -17,7 +17,11 @@ app = Flask(__name__)
 application = app
 app.secret_key = '9TMZDPzyUpnu7ZN4X88k6mFiW4L3a4Lsijnv9CxFL4vBZcjzAxGvEtbwSJxCZY'
 app.config['MONGO_DBNAME'] = 'annotation'
-app.config["MONGO_URI"] = json.load(open('.cred.json'))['mongodb']
+if os.path.isfile('.cred.json'):
+    app.config["MONGO_URI"] = json.load(open('.cred.json'))['mongodb']
+else:
+    app.config["MONGO_URI"] = os.environ['mongodb']
+    
 app.config['LOGIN_URL'] = "/login"
 
 mongo = PyMongo(app)
