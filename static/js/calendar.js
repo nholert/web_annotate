@@ -1,18 +1,18 @@
 const validate = (value)=>{
-    return value!="" && 0 <= value && value <= 100
+    return value!="" && 0 <= value && value <= 50
 }
 const round = (value)=>{
     if (value < 0){
         return 0
-    }else if (value > 100){
-        return 100
+    }else if (value > 50){
+        return 50
     }else{
         return value
     }
 }
 
 const convex_combination = (self,target)=>{
-    target.val(100-self.val(round(self.val())).val())
+    target.val(50-self.val(round(self.val())).val())
 
 }
 const convex_handle = (self)=>{
@@ -47,20 +47,28 @@ const options = {
     enableYearSwitch: false,
     displayMode: "inline",
     type: 'date',
-    minDate:  new Date(early_date),
     endDate:  new Date(late_date),
     startDate: new Date(early_date),
     date: new Date(late_date),
 };
 const calendars = bulmaCalendar.attach('[type="date"]', options);
-$(".datepicker-nav-next","#second-calendar").click()
-$(".datepicker-nav-next","#third-calendar").click().click()
-$(".datepicker-nav-next","#fourth-calendar").click().click().click()
-$(".datepicker-nav-next","#fifth-calendar").click().click().click().click()
-
+if (options.startDate.getMonth()==9){
+    $(".datepicker-nav-next","#second-calendar").click()
+    $(".datepicker-nav-next","#third-calendar").click().click()
+    $(".datepicker-nav-next","#fourth-calendar").click().click().click()
+    $(".datepicker-nav-next","#fifth-calendar").click().click().click().click()
+}else{
+    $(".datepicker-nav-previous","#first-calendar").click()
+    $(".datepicker-nav-next","#second-calendar")
+    $(".datepicker-nav-next","#third-calendar").click()
+    $(".datepicker-nav-next","#fourth-calendar").click().click()
+    $(".datepicker-nav-next","#fifth-calendar").click().click().click()
+}
+/*
 $(".datepicker-nav-next").each((i,e)=>{
     $(e).css('cursor','auto').css('z-index','-1')
 });
 $(".datepicker-nav-previous").each((i,e)=>{
     $(e).css('cursor','auto').css('z-index','-1')
 });
+*/

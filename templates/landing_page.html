@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<!-- 
+  Author: William Wyatt
+  License: GNU3
+  Purpose: WebUI to annodate. 
+-->
+<html>
+
+<head>
+  <title>Introduction</title>
+  {% include "header.html" %}
+</head>
+
+<body>
+  <form method="POST" action="/landing/accept">
+    <input type="text" hidden value="{{index}}" name="index" />
+    <input type="text" hidden value="{{start}}" name="start_time" />
+    <input type="text" hidden value="{{key}}" name="key" />
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+    <div class="content">
+      <section class="hero is-primary">
+        <div class="hero-body">
+          <p class="title ">
+            Informed Consent to Participate in Research
+          </p>
+          <p class="subtitle ">
+            Claremont McKenna College
+          </p>
+        </div>
+      </section>
+      <div class="section">
+        <p>
+          <b>Project Title:</b> Intertemporal Decisions
+        </p>
+        <p>
+          <b>Principle Investigator:</b> Cameron Shelton, McMahon Family Associate Professor of Political Economy
+        </p>
+        <p>
+          <em>
+            You are being invited to participate in a research study, which the Claremont McKenna College Institutional
+            Review Board (IRB) has reviewed and approved for conduct by the investigators named here. This form is
+            designed to provide you - as a human subject - with information about this study. The Investigator or
+            his/her representative will describe this study to you and answer any of your questions. You are entitled to
+            a copy of this form. If you have any questions or complaints about the informed consent process of this
+            research study or your rights as a subject, please contact the IRB at the Claremont McKenna College Office
+            of Institutional Research at (909) 607-8395 or <a href="mailto:IRB@cmc.edu">IRB@cmc.edu</a>. Also see <a
+              target="_blank" href="www.cmc.edu/IRB">www.cmc.edu/IRB</a> for more information on research involving
+            human subjects.
+          </em>
+        </p>
+        <br>
+        <p><b>What is the purpose of the study?</b></p>
+        <p>
+          We are attempting to measure how people choose between receiving a smaller reward at an early date and
+          receiving a larger reward at a later date.
+        </p>
+        <p><b>Eligibility</b></p>
+        <p>To take this survey you must be:</p>
+        <ul>
+          <li>At least 18 years old</li>
+          <li>Financially independent</li>
+        </ul>
+        <br>
+        <p><b>What will I do?</b></p>
+        <p>You will answer 17 simple questions about your household economics and your personal politics. We expect
+          these will be simple to answer.</p>
+
+        <p>After this, you will be taken to a screen to play a game. Essentially, the game will ask you to allocate
+          tokens between two dates. If all the tokens are allocated to the later date, the value is $10. Tokens
+          allocated to the early date are worth less than those allocated to the later date. You will be asked this
+          question 45 times, for different combinations of early and late dates and different penalties for the early
+          date.</p>
+        <p><b>Risks</b></p>
+        <p>We also ask you some questions including some (income, political affiliation) whose answers you may wish to
+          keep private. <b>These answers will be stored anonymously. We will never link these answers to your email
+            address.</b></p>
+        <p>Anytime you share information online there are risks. We are using a secure system to collect this data. We
+          will store all information in secure servers under password. Data are anonymous. Once payment has been made,
+          your email address will be discarded and only a study ID will be used.</p>
+
+        <p><b>Compensation</b></p>
+        <p>
+          Payment is earned upon completion of the survey. We ask for your email address in order to pay you. Payment
+          will
+          be delivered via Amazon gift cards to this email address. The amounts and dates will be determined by your
+          answers as mentioned above. Of the 45 scenarios you consider, we will draw one at random and pay you according
+          to your choices. To this, we will add $5 to the early date and $5 to the late date. Thus, you will receive
+          payment at two future dates. The total will be between $15 and $20.
+          <br>
+          <b>We will never use your email address for anything other than sending you payment.</b>
+        </p>
+        <p><b>Questions about the research, complaints, or problems:</b> Contact Cameron Shelton, cshelton@cmc.edu</p>
+        <br>
+        <p><b>Agreement to Participate:</b></p>
+        <p><b>I hereby give my consent to participate in the research study entitled “intertemporal decisions.” I have
+            read the above information and am aware of the potential risks and complications. I fully understand that I
+            may withdraw from this research project at any time.</b></p>
+
+      </div>
+      <div class="section level">
+        <div class="level-left"></div>
+        <div class="level-right">
+          <div class="is-grouped">
+            <p class="control">
+              <a href="{{session['terminate']}}" class="button is-secondary">
+                Reject
+              </a>
+              <button type="submit" class="button is-primary">
+                Agree and Accept
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</body>
+
+</html>

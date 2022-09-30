@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<!-- 
+  Author: William Wyatt
+  License: GNU3
+  Purpose: WebUI to annodate. 
+-->
+<html>
+
+<head>
+  <title>Introduction</title>
+  {% include "header.html" %}
+</head>
+
+<body>
+  <form method="GET" action="/calendar">
+    <div class="content">
+      <section class="hero is-primary">
+        <div class="hero-body">
+          <p class="title ">
+            Instructions
+          </p>
+          <p class="subtitle ">
+
+          </p>
+        </div>
+      </section>
+      <div class="section">
+        <p>
+          <b>Choices</b>
+        </p>
+        <p>
+          In this final section, you will be asked to make a series of similar decisions. Each line is a separate
+          decision.
+        </p>
+        <p>
+          Each decision consists of allocating a total of 50 tokens between an early date and a later date.
+        </p>
+        <p>
+          For each decision you get a new set of 50 tokens.
+        </p>
+        <p>
+          Tokens allocated to the later date are worth 20 cents each. Tokens allocated to the early date are worth an
+          amount that changes from line to line.
+        </p>
+        <p>
+          The program does the multiplication for you, showing the totals for each date based on your current choices.
+        </p>
+        <p>
+          There are 9 tabs with 5 lines on each tab.
+        </p>
+        <p>
+          Each line has a different value for the early date.
+        </p>
+        <p>
+          Each tab has a different pair of dates.
+        </p>
+        <p>
+          The early date and the late date are shown on the calendar at the top.
+        </p>
+        <p>
+          You can navigate back and forth between the tabs. When you are finished, click the button at the bottom to
+          submit all of your decisions.
+        </p>
+        <p>
+          You must make a choice in all decisions before you can submit.
+        </p>
+        <br>
+        <p><b>Payment</b></p>
+        <p>After you submit, one of your 45 lines will be chosen at random. You will be paid based on your choices for
+          this line. You will also receive an extra $5 thank you on each of the two dates.
+        </p>
+        <p>
+        <p><b>Example:</b></p>
+          <p>If the line selected at random was:</p>
+          <div style="margin-left: 2rem;">
+            <p>Early Date: <blue>November 29<sup>th</sup></blue>, tokens worth <blue>16 cents</blue></p>
+            <p>Late Date: <blue>January 17th</blue>, tokens worth <blue>20 cents</blue></p>
+          </div>
+        </p>
+        <p>And you put <blue>20 tokens</blue> in the early date and 30 tokens in the late date, then you would receiv</p>
+        <div style="margin-left: 2rem;">
+          <p>Early Date: $5 thank you + <blue>20 tokens * 16 cents/token = </blue> $8.20 on <blue>November 29th</blue>
+          <p>Late Date: $5 thank you + <blue>30 tokens * 20 cents/token = </blue> $11 on <blue>January 17th</blue>
+        </div>
+      </div>
+      <div class="section level">
+        <div class="level-left"></div>
+        <div class="level-right">
+          <div class="is-grouped">
+            <p class="control">
+              <button type="submit" class="button is-primary">
+                Continue
+              </button>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </form>
+</body>
+
+</html>

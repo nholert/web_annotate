@@ -19,11 +19,18 @@
       <section class="hero is-primary">
         <div class="hero-body">
           <p class="title">
-            {{question}}
+            {{title}}
           </p>
-          <p class="subtitle">
-            {{detail}}
-          </p>
+          <div class="subtitle">
+            <div class="level">
+              <div class="level-left">
+                <p>Answer a few questions about yourself.</p>
+              </div>
+              <div class="level-right">
+                <p>{{progress}} complete</p>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
       <div class="section">
@@ -32,15 +39,21 @@
                 <span>{{error}}</span>
             </div>
         {% endif %}
-        {% if type=="number" %}
-            {% include "question_components/number.html" %}
-        {% elif type=="zipcode" %}
-            {% include "question_components/zipcode.html" %}
-        {% elif type=="category" %}
-            {% include "question_components/category.html" %}
-        {% elif type=="menu" %}
-            {% include "question_components/menu.html" %}
+        <div class="field">
+          <label class="label">{{question}}</label>
+          {% if type=="number" %}
+              {% include "question_components/number.html" %}
+          {% elif type=="zipcode" %}
+              {% include "question_components/zipcode.html" %}
+          {% elif type=="category" %}
+              {% include "question_components/category.html" %}
+          {% elif type=="menu" %}
+              {% include "question_components/menu.html" %}
+          {% endif %}
+        {% if show_detail %}
+        <p class="help">{{detail}}</p>
         {% endif %}
+      </div>
      </div>
       <div class="section level">
         <div class="level-left"></div>

@@ -1,15 +1,9 @@
-<div class="field">
-  <label class="label">{{title}}</label>
-  <div class="control">
-    {% for category in categories %}
-      <label class="radio">
-        <input required type="radio" name="answer" value="{{category}}">
-        {{category}}
-      </label>
-      <br>
-    {% endfor %}
-  </div>
-  {% if show_detail %}
-  <p class="help">{{detail}}</p>
-  {% endif %}
+<div class="control">
+  {% for category in categories %}
+    <label class="radio">
+      <input required type="radio" name="answer" value="{{category}}">
+      {{category}}
+    </label>
+    <br>
+  {% endfor %}
 </div>

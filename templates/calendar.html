@@ -24,10 +24,10 @@
       <section class="hero is-info">
         <div class="hero-body">
           <p class="title">
-            Please allocate 100 tokens ({{label}})
+            Please allocate 50 tokens ({{label}})
           </p>
           <p class="subtitle">
-            <span>You are given 100 tokens worth between $0.10 and $0.20.</span><br>
+            <span>You are given 50 tokens worth between $0.10 and $0.20.</span><br>
             <span>You must distribute these tokens on either {{early_label}} for less value or {{late_label}} for more value.</span><br>
             <span>Please distribute the tokens in the way you most prefer below.</span>
           </p>
@@ -36,14 +36,19 @@
 
       <!-- MAIN CONTENT SECTION-->
       <div class="section">
+        <div class="level">
+          <div class="level-item">
+            <a href="/calendar/instructions"><span class="button is-link is-light">Detailed Instructions</span></a>
+          </div>
+        </div>
         <div class="block">
           <div class="block has-text-centered">
             <label class="label">
               Date Selection
             </label>
-            <span>Please be sure to complete the decisions behind date selection tab before clicking submit.</span><br>
-            <span>You can make your decision in any order, and can always revise you decisions before
-              submitting.</span>
+            <span>You must make selections for each of the decision lines before clicking submit. That is 9 tabs with 5 lines each.</span><br>
+            <span>You can make your decision in any order, and can go back to revise decisions before submitting.</span><br>
+            <span>After submission, one of these lines will be chosen at random for payment.</span>
           </div>
           <!-- MENU SECTION -->
           <div class="tabs is-small is-boxed">
@@ -70,6 +75,9 @@
           <div id="fourth-calendar" class="column cal">
             <input type="date">
           </div>
+          <div id="fifth-calendar" class="column cal">
+            <input type="date">
+          </div>
         </div>
         <!-- INTERACTIVE INTERFACE-->
         {% for start,end in rates %}
@@ -81,8 +89,8 @@
             <div class="level-left">
               <div class="level-item">
                 <input required id="{{loop.index0}}-{{start}}" name="{{index}}-{{loop.index0}}-{{start}}" target="{{loop.index0}}-{{end}}"
-                  onchange="convex_handle(this)" onkeyup="convex_handle(this)" class="input inline-number is-small" type="number" step=1 min=0 max=100
-                  placeholder="50" />
+                  onchange="convex_handle(this)" onkeyup="convex_handle(this)" class="input inline-number is-small" type="number" step=1 min=0 max=50
+                  placeholder="25" />
               </div>
               <div class="level-item">
                 <label class="label">Tokens at $0.{{start}} on {{early_label}}</label>
@@ -92,8 +100,8 @@
             <div class="level-right">
               <div class="level-item">
                 <input required id="{{loop.index0}}-{{end}}" name="{{index}}-{{loop.index0}}-{{end}}" target="{{loop.index0}}-{{start}}"
-                  onchange="convex_handle(this)" onkeyup="convex_handle(this)" class="input inline-number is-small" type="number" step=1 min=0 max=100
-                  placeholder="50" />
+                  onchange="convex_handle(this)" onkeyup="convex_handle(this)" class="input inline-number is-small" type="number" step=1 min=0 max=50
+                  placeholder="25" />
               </div>
               <div class="level-item">
                 <label class="label">Tokens at $0.{{end}} on {{late_label}}</label>

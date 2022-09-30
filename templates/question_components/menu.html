@@ -1,16 +1,8 @@
-<div class="field">
-    <label class="label">{{title}}</label>
-    <div class="select">
-        <select required name="answer">
-            <option selected="true" disabled="disabled">Choose {{title}}</option>
-            {% for category in categories %}
-          <option value="{{category}}">{{category}}</option>
-          {% endfor %}
-        </select>
-    </div>
-    {% if show_detail %}
-        <p class="help">{{detail}}</p>
-    {% endif %}
+<div class="select">
+    <select required name="answer">
+        <option selected="true" disabled="disabled">Choose {{title}}</option>
+        {% for category in categories %}
+        <option value="{{category}}">{{category}}</option>
+        {% endfor %}
+    </select>
 </div>
-
-

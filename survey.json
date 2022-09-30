@@ -5,7 +5,7 @@
         "question": "What is your age?",
         "detail": "How old are you",
         "type": "number",
-        "min": 18,
+        "min": 0,
         "max": 99
     },
     {
@@ -65,11 +65,10 @@
     {
         "title": "Income",
         "key": "income",
-        "question": "Roughly what is your household annual income?",
+        "question": "Approximately what is your household income in thousands of dollars?",
         "detail": "Approximatley",
-        "type": "number",
-        "min": 0,
-        "max": 200000
+        "type": "menu",
+        "categories": ["Below $10,000", "Between $10,001 and $20,000", "Between $20,001 and $30,000", "Between $30,001 and $40,000", "Between $40,001 and $50,000", "Between $50,001 and $60,000", "Between $60,001 and $70,000", "Between $70,001 and $80,000", "Between $80,001 and $90,000", "Between $90,001 and $100,000", "Between $100,001 and $110,000", "Between $110,001 and $120,000", "Between $120,001 and $130,000", "Between $130,001 and $140,000", "Between $140,001 and $150,000", "Between $150,001 and $160,000", "Between $160,001 and $170,000", "Between $170,001 and $180,000", "Between $180,001 and $190,000", "Between $190,001 and $200,000", "Above $200,000"]
     },
     {
         "title": "Political Affiliation",
@@ -126,12 +125,7 @@
             "Television",
             "Newspaper or Magazine (online or print)",
             "Word of Mouth",
-            "TikTok",
-            "Reddit",
-            "Facebook",
-            "Instagram",
-            "Twitter",
-            "Other Social Media Platform",
+            "Social Media",
             "Other News Source",
             "None"
         ]

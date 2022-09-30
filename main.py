@@ -13,6 +13,18 @@ from bson.objectid import ObjectId
 from urllib.parse import urlparse, urljoin
 from flask.sessions import SecureCookieSessionInterface
 
+"""
+Endpoint: https://spectrumsurveys.com/surveydone
+st: {
+    21: completed
+    17: over quota
+    18: termination
+    30: dedupe
+    20: quality
+}
+transaction_id: user.get_id() or token
+"""
+
 app = Flask(__name__)
 application = app
 app.secret_key = '9TMZDPzyUpnu7ZN4X88k6mFiW4L3a4Lsijnv9CxFL4vBZcjzAxGvEtbwSJxCZY'
@@ -82,7 +94,21 @@ class User(UserMixin):
     def is_anonymous():
         return False
     
+    def set_consent(self):
+        update = {"$set": { 'consented': True } }
+        mongo.db.users.update_one({'token': self.token},update)
+        
+    def has_consent(self):
+        user = mongo.db.users.find_one({'token': self.token})
+        return user is not None and 'consented' in user and user['consented']
     
+    def set_old(self,is_old=True):
+        update = {"$set": { 'is_old': is_old } }
+        mongo.db.users.update_one({'token': self.token},update)
+        
+    def is_old(self):
+        user = mongo.db.users.find_one({'token': self.token})
+        return user is not None and 'is_old' in user and user['is_old']
     
     def get_id(self):
         return self.token
@@ -121,7 +147,9 @@ class User(UserMixin):
         
     @app.route('/login', methods=['GET'])
     def login():
-        token = request.args.get('token',str(uuid.uuid4()))
+        token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
+        session['token'] = token
+        session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
         logged_in = User.login_user(token)
         if logged_in:
             return redirect('/')
@@ -177,52 +205,96 @@ def unauthorized_callback():
 @app.route('/',methods=["GET"])
 @login_required
 def index():
+    return redirect('/landing')
+
+@app.route('/landing',methods=["GET"])
+@login_required
+def landing():
+    return render_template('landing_page.html')
+
+@app.route('/landing/accept',methods=["POST"])
+@login_required
+def accept_consent():
+    current_user.set_consent()
+    return redirect('/survey')
+
+
+#Entry point to the survey
+@app.route('/survey/<int:index>',methods=["GET"])
+@login_required
+def survey_page_specific(index):
+    session['survey_index'] = index
     return redirect('/survey')
 
 #Entry point to the survey
 @app.route('/survey',methods=["GET"])
 @login_required
 def survey_page():
-    question = survey[0]
-    start=time.time()
-    return render_template(f'question.html',index=0,start=start,**question)
-
-#Entry point to the survey
-@app.route('/survey/<int:index>',methods=["GET"])
-@login_required
-def survey_page_specific(index):
+    if not current_user.has_consent():
+        return redirect('/landing')
+    index = session.get('survey_index',0)
     question = survey[index]
+    progress = f'{round(index/len(survey)*100)}%'
     start=time.time()
-    return render_template(f'question.html',index=index,start=start,**question)
+    return render_template(f'question.html',progress=progress,index=index,start=start,**question)
+
 
 #Must be refferred from previous survey question
 @app.route('/survey',methods=["POST"])
 @login_required
 def survey_page_index():
+    #Parse the answer
     index = request.form.get('index',None)
     key = request.form.get('key',None)
     answer = request.form.get('answer',None)
+    
+    #Check if malformed response
     if index is None or answer is None or answer is None:
         return {'error': "Something went wrong with your survey!","index": index,"key":key,"answer":answer}
+    
+    #Key specific control code
     if 'zipcode' in key and len(answer.strip()) != 5:
         start_time = float(request.form.get('start_time',None))
         error = "You must enter a proper zipcode!"
         index = int(index)
         return render_template('question.html',index=index,start=start_time,error=error,**survey[index])
+    elif 'age' in key:
+        current_user.set_old(int(answer)>=18)
+        if int(answer) < 18:
+            current_user.set_answer(key,answer)
+            return redirect(session['terminate'])
     index = int(index) + 1
     duration = time.time()-float(request.form.get('start_time',None))
     current_user.set_answer(key,answer,duration)
     if index == len(survey):
         current_user.completed_survey()
-        return redirect('/calendar')
+        return redirect('/calendar/instructions')
+    progress = f'{round(index/len(survey)*100)}%'
     start=time.time()
-    return render_template('question.html',index=index,start=start,**survey[index])
+    return render_template('question.html',progress=progress,index=index,start=start,**survey[index])
+
+
+@app.route('/calendar/instructions',methods=["GET"])
+def calendar_instructions():
+    return render_template('calendar_instructions.html')
+
 
 
 @app.route('/calendar/<int:index>',methods=["GET"])
 def goto_date(index):
-    session['index'] = index
+    session['calendar_index'] = index
     return redirect('/calendar')
+
+
+@app.route('/calendar',methods=["GET"])
+@login_required
+def calendar_page():
+    if not current_user.has_consent():
+        return redirect('/landing')
+    index = session.get('calendar_index',0)
+    date = calendar[index]
+    start = time.time()
+    return render_template('calendar.html',start_time=start,index=index,calendar=calendar,**date)
 
 @app.route('/calendar',methods=["POST"])
 @login_required
@@ -239,18 +311,12 @@ def submit_calendar_page():
     start = time.time()
     return render_template('calendar.html',start_time=start,index=index,calendar=calendar,**date)
 
-@app.route('/calendar',methods=["GET"])
-@login_required
-def calendar_page():
-    index = session.get('index',0)
-    date = calendar[index]
-    start = time.time()
-    return render_template('calendar.html',start_time=start,index=index,calendar=calendar,**date)
 
 
-
-
+@app.route('/test',methods=["GET"])
+def test_page():
+    return dict(os.environ)
 
 
 if __name__=="__main__":
-    app.run(host='0.0.0.0',port='8976',debug=False)
+    app.run(host='0.0.0.0',port='8976',debug=True)
