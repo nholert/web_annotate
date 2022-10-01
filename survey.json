@@ -28,7 +28,59 @@
         "question": "What state are you in?",
         "detail": "Your current state of residence.",
         "type": "menu",
-        "categories": ["Alabama", "Alaska", "Arizona", "Arkansas", "California", "Colorado", "Connecticut", "Delaware", "District of Columbia", "Florida", "Georgia", "Hawaii", "Idaho", "Illinois", "Indiana", "Iowa", "Kansas", "Kentucky", "Louisiana", "Maine", "Montana", "Nebraska", "Nevada", "New Hampshire", "New Jersey", "New Mexico", "New York", "North Carolina", "North Dakota", "Ohio", "Oklahoma", "Oregon", "Maryland", "Massachusetts", "Michigan", "Minnesota", "Mississippi", "Missouri", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"]
+        "categories": [
+            "Alabama",
+            "Alaska",
+            "Arizona",
+            "Arkansas",
+            "California",
+            "Colorado",
+            "Connecticut",
+            "Delaware",
+            "District of Columbia",
+            "Florida",
+            "Georgia",
+            "Hawaii",
+            "Idaho",
+            "Illinois",
+            "Indiana",
+            "Iowa",
+            "Kansas",
+            "Kentucky",
+            "Louisiana",
+            "Maine",
+            "Montana",
+            "Nebraska",
+            "Nevada",
+            "New Hampshire",
+            "New Jersey",
+            "New Mexico",
+            "New York",
+            "North Carolina",
+            "North Dakota",
+            "Ohio",
+            "Oklahoma",
+            "Oregon",
+            "Maryland",
+            "Massachusetts",
+            "Michigan",
+            "Minnesota",
+            "Mississippi",
+            "Missouri",
+            "Pennsylvania",
+            "Rhode Island",
+            "South Carolina",
+            "South Dakota",
+            "Tennessee",
+            "Texas",
+            "Utah",
+            "Vermont",
+            "Virginia",
+            "Washington",
+            "West Virginia",
+            "Wisconsin",
+            "Wyoming"
+        ]
     },
     {
         "title": "Zipcode",
@@ -68,7 +120,51 @@
         "question": "Approximately what is your household income in thousands of dollars?",
         "detail": "Approximatley",
         "type": "menu",
-        "categories": ["Below $10,000", "Between $10,001 and $20,000", "Between $20,001 and $30,000", "Between $30,001 and $40,000", "Between $40,001 and $50,000", "Between $50,001 and $60,000", "Between $60,001 and $70,000", "Between $70,001 and $80,000", "Between $80,001 and $90,000", "Between $90,001 and $100,000", "Between $100,001 and $110,000", "Between $110,001 and $120,000", "Between $120,001 and $130,000", "Between $130,001 and $140,000", "Between $140,001 and $150,000", "Between $150,001 and $160,000", "Between $160,001 and $170,000", "Between $170,001 and $180,000", "Between $180,001 and $190,000", "Between $190,001 and $200,000", "Above $200,000"]
+        "categories": [
+            "Below $10,000",
+            "Between $10,001 and $20,000",
+            "Between $20,001 and $30,000",
+            "Between $30,001 and $40,000",
+            "Between $40,001 and $50,000",
+            "Between $50,001 and $60,000",
+            "Between $60,001 and $70,000",
+            "Between $70,001 and $80,000",
+            "Between $80,001 and $90,000",
+            "Between $90,001 and $100,000",
+            "Between $100,001 and $110,000",
+            "Between $110,001 and $120,000",
+            "Between $120,001 and $130,000",
+            "Between $130,001 and $140,000",
+            "Between $140,001 and $150,000",
+            "Between $150,001 and $160,000",
+            "Between $160,001 and $170,000",
+            "Between $170,001 and $180,000",
+            "Between $180,001 and $190,000",
+            "Between $190,001 and $200,000",
+            "Above $200,000"
+        ]
+    },
+    {
+        "title": "Emergency Expense",
+        "key": "emergency_expense",
+        "question": "Suppose that you have an emergency expense that costs $400. Could you pay for this out of your savings?",
+        "type": "category",
+        "categories": [
+            "Yes",
+            "No"
+        ]
+    },
+    {
+        "title": "Liquid Assets",
+        "key": "liquid_assets",
+        "question": "Consider the amount you have in your savings and checking and other bank accounts plus the value of your stocks and bonds and other investments. (But do not consider retirement accounts, health insurance, or home equity.) After paying off your credit card balances, what is the largest amount you would have left to meet an emergency expense?",
+        "type": "category",
+        "categories": [
+            "Less than one month of my income",
+            "Between one and two months of my income",
+            "Between two and three months of my income",
+            "More than three months of my income"
+        ]
     },
     {
         "title": "Political Affiliation",
@@ -97,6 +193,53 @@
             "Only now and then",
             "Hardly at all",
             "I do not know"
+        ]
+    },
+    {
+        "title": "Political Knowledge: President",
+        "key": "knowledge_pres",
+        "question": "Which political party is the current US President a member of?",
+        "type": "category",
+        "categories": [
+            "Republican",
+            "Democrat",
+            "I don't know"
+        ]
+    },
+    {
+        "title": "Political Knowledge: Congress",
+        "key": "knowledge_cong",
+        "question": "Which political party currently controls Congress?",
+        "type": "category",
+        "categories": [
+            "Republicans control both chambers",
+            "Democrats control both chamebrs",
+            "Split with each controlling one chamber",
+            "I do not know"
+        ]
+    },
+    {
+        "title": "Political Knowledge: Governor",
+        "key": "knowledge_gov",
+        "question": "Which political party is your state Governor a member of?",
+        "type": "category",
+        "categories": [
+            "Republican",
+            "Democrat",
+            "I do not know"
+        ]
+    },
+    {
+        "title": "Political Knowledge: State Legislature",
+        "key": "knowledge_sl",
+        "question": "Which political party currently controls your state legislature?",
+        "type": "category",
+        "categories": [
+            "Republicans control both chambers",
+            "Democrats control both chambers",
+            "Split with each controlling one chamber",
+            "I'm from Nebraska",
+            "I don't know"
         ]
     },
     {
@@ -145,5 +288,5 @@
             "Retired",
             "Other"
         ]
-    }  
+    }
 ]
