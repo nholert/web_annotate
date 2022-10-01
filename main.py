@@ -263,6 +263,10 @@ def survey_page_index():
         if int(answer) < 18:
             current_user.set_answer(key,answer)
             return redirect(session['terminate'])
+    elif 'head_of_house' in key:
+        if 'no' in answer.lower():
+            current_user.set_answer(key,answer)
+            return redirect(session['terminate'])
     index = int(index) + 1
     duration = time.time()-float(request.form.get('start_time',None))
     current_user.set_answer(key,answer,duration)
