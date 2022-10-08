@@ -110,8 +110,8 @@
         "detail": "",
         "type": "category",
         "categories": [
-            "Yes",
-            "No"
+            "Head of Household",
+            "Financial Dependent"
         ]
     },
     {
@@ -157,13 +157,49 @@
     {
         "title": "Liquid Assets",
         "key": "liquid_assets",
-        "question": "Consider the amount you have in your savings and checking and other bank accounts plus the value of your stocks and bonds and other investments. (But do not consider retirement accounts, health insurance, or home equity.) After paying off your credit card balances, what is the largest amount you would have left to meet an emergency expense?",
+        "question": "Consider the amount you have in your savings and checking and other bank accounts\nplus the value of stocks and bonds. (But do not consider retirement accounts, health insurance, or home equity). \nAfter paying your credit card balances, what is the largest amount you would have left to meet an emergency expense?",
         "type": "category",
         "categories": [
             "Less than one month of my income",
             "Between one and two months of my income",
             "Between two and three months of my income",
             "More than three months of my income"
+        ]
+    },
+    {
+        "title": "Family Financial Forecast",
+        "key": "family_financial_forecast",
+        "question": "Do you think that a year from now, you and your family will be...",
+        "detail": "",
+        "type": "category",
+        "categories": [
+            "Better off financially",
+            "Worse off financially",
+            "About the same financially"
+        ]
+    },
+    {
+        "title": "US Business Forecast",
+        "key": "business_forecast",
+        "question": "Do you think that business conditions in the United States during the next year will be...",
+        "detail": "",
+        "type": "category",
+        "categories": [
+            "Improving",
+            "Declining",
+            "Staying about the same"
+        ]
+    },
+    {
+        "title": "Regional Business Forecast",
+        "key": "regional_business_forecast",
+        "question": "Do you think that business conditions in your region during the next year will be...",
+        "detail": "",
+        "type": "category",
+        "categories": [
+            "Improving",
+            "Declining",
+            "Staying about the same"
         ]
     },
     {
@@ -226,6 +262,7 @@
         "categories": [
             "Republican",
             "Democrat",
+            "I'm from DC",
             "I do not know"
         ]
     },
@@ -239,6 +276,7 @@
             "Democrats control both chambers",
             "Split with each controlling one chamber",
             "I'm from Nebraska",
+            "I'm from DC",
             "I don't know"
         ]
     },

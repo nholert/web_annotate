@@ -1,6 +1,6 @@
 from werkzeug.middleware.proxy_fix import ProxyFix
 import json,os,hashlib,datetime,time,logging
-import flask,requests,uuid,datetime
+import flask,requests,uuid,datetime,random
 from flask import Blueprint,Flask,request,redirect,render_template,session,flash,abort,make_response
 from flask_pymongo import PyMongo
 from flask_wtf.csrf import CSRFProtect
@@ -127,6 +127,10 @@ class User(UserMixin):
         }
         mongo.db.users.update_one({'token': self.token},update)
         
+    def get_progress(self):
+        user = mongo.db.users.find_one({'token': self.token})
+        return {key: value for key,value in user.items() if 'calendar' in key}
+    
     def set_discount(self,index,form,duration):
         print(list(form))
         date = calendar[index]
@@ -150,6 +154,8 @@ class User(UserMixin):
         token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
         session['token'] = token
         session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
+        session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
+
         logged_in = User.login_user(token)
         if logged_in:
             return redirect('/')
@@ -264,7 +270,7 @@ def survey_page_index():
             current_user.set_answer(key,answer)
             return redirect(session['terminate'])
     elif 'head_of_house' in key:
-        if 'no' in answer.lower():
+        if 'Financial Dependent' in answer:
             current_user.set_answer(key,answer)
             return redirect(session['terminate'])
     index = int(index) + 1
@@ -297,23 +303,39 @@ def calendar_page():
         return redirect('/landing')
     index = session.get('calendar_index',0)
     date = calendar[index]
+    progress = current_user.get_progress()
     start = time.time()
-    return render_template('calendar.html',start_time=start,index=index,calendar=calendar,**date)
+    return render_template('calendar.html',progress=progress,start_time=start,index=index,calendar=calendar,**date)
 
 @app.route('/calendar',methods=["POST"])
 @login_required
 def submit_calendar_page():
     index = request.form.get('index',None)
-    if index is None:
-        return {'error': "Something went wrong with your survey!","index": index,"key":key,"answer":answer}
+    next_index = request.form.get('next_index',None)
+    if index is None or next_index is None:
+        return {'error': "Something went wrong with your survey!","index": index,"next_index": next_index}
     duration = time.time()-float(request.form.get('start_time',None))
     
-    current_user.set_discount(int(index),request.form,duration)
+    current_user.set_discount(int(index)%len(calendar),request.form,duration)
     
-    index = int(index) + 1
-    date = calendar[index]
+    index = int(next_index)
+    date = calendar[index%len(calendar)]
+    progress = current_user.get_progress()
+    completed_count = sum([1 for key,value in progress.items() if "completed_calendar" in key and value==True])
+    progress['percentage'] = f'{round(completed_count/len(calendar)*100)}'
+    completed = completed_count == len(calendar)
+    if completed:
+        col = random.randint(0,len(calendar)-1)
+        row = random.randint(0,len(calendar[col]['rates'])-1)
+        
+        early_rate,late_rate = calendar[col]['rates'][row]
+        cal = calendar[col]
+        early_tokens = progress[f'calendar_{col}_{row}_{early_rate}']
+        late_tokens = progress[f'calendar_{col}_{row}_{late_rate}']
+        return render_template('final_page.html',progress=progress,col=col,row=row,cal=cal,early_rate=early_rate,late_rate=late_rate,early_tokens=early_tokens,late_tokens=late_tokens)
+    
     start = time.time()
-    return render_template('calendar.html',start_time=start,index=index,calendar=calendar,**date)
+    return render_template('calendar.html',progress=progress,start_time=start,index=index,calendar=calendar,**date)
 
 
 

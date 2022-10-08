@@ -29,7 +29,6 @@ const convex_handle = (self)=>{
 }
 $('input[type="number"]').each((_,e)=>{
     e = $(e)
-    console.log(e.val())
     if (validate(e.val())){
         convex_handle(e)
     }
@@ -72,3 +71,34 @@ $(".datepicker-nav-previous").each((i,e)=>{
     $(e).css('cursor','auto').css('z-index','-1')
 });
 */
+
+const validate_form = ()=>{
+    const msg = "Please fill out all token fields before changing pages."
+    let alerted = false
+    $("input[type=number]").each((i,e)=>{
+        if (!alerted && $(e).val()==""){
+            alerted = true
+            bulmaToast.toast({ 
+                message: msg,
+                position: "center",
+                duration: 10000,
+                dismissible: true,
+                pauseOnHover: true,
+                closeOnClick: true,
+                opacity: .8,
+                type: "is-danger"
+            })
+            $(e).focus()
+            e.reportValidity()
+        }
+    })
+    return !alerted
+}
+
+const submit = (index)=>{
+    if (validate_form()){
+        $("#next_index").val(index);
+        $("#myForm").submit();
+    }
+}
+

@@ -35,3 +35,22 @@ html,body,form{
 blue{
     color: #AF9FC9;
 }
+.question{
+    white-space: pre-wrap;
+}
+button, button:focus{
+    outline: none;
+    background: transparent;
+    border: 1px solid transparent;
+  }
+  
+  button:active{
+    outline: none;
+    background: transparent;
+    border: 1px solid grey;
+  }
+  
+.completed{
+    color: green;
+    background-color: #0001;
+}

@@ -14,8 +14,9 @@
 </head>
 
 <body>
-  <form method="POST" action="/calendar">
+  <form id="myForm" method="POST" action="/calendar">
     <input type="text" hidden value="{{index}}" name="index" />
+    <input id="next_index" type="text" hidden value="{{index+1}}" name="next_index" />
     <input type="text" hidden value="{{start_time}}" name="start_time" />
     <input type="text" hidden value="{{key}}" name="key" />
     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
@@ -26,11 +27,23 @@
           <p class="title">
             Please allocate 50 tokens ({{label}})
           </p>
-          <p class="subtitle">
-            <span>You are given 50 tokens worth between $0.10 and $0.20.</span><br>
-            <span>You must distribute these tokens on either {{early_label}} for less value or {{late_label}} for more value.</span><br>
-            <span>Please distribute the tokens in the way you most prefer below.</span>
-          </p>
+          <span class="subtitle">
+          <div class="level">
+            <div class="level-left">
+              <div class="level-item">
+                <div><span>You are given 50 tokens worth between $0.10 and $0.20.</span><br>
+                  <span>You must distribute these tokens on either {{early_label}} for less value or {{late_label}} for
+                    more value.</span><br>
+                  <span>Please distribute the tokens in the way you most prefer below.</span></div>
+                
+              </div>
+            </div>
+            <div class="level-right">
+              <span>{{progress['percentage']}}% completed.</span>
+            </div>
+          </div>
+
+        </span>
         </div>
       </section>
 
@@ -46,17 +59,26 @@
             <label class="label">
               Date Selection
             </label>
-            <span>You must make selections for each of the decision lines before clicking submit. That is 9 tabs with 5 lines each.</span><br>
+            <span>There are 9 tabs, each with a different pair of dates.</span><br>
+            <span>Each tab has five lines, each with a different value for tokens allocated to the early
+              date.</span><br>
+            <span>So, you will make 45 separate choices.</span>
+            <!--<span>You must make selections for each of the decision lines before clicking submit. That is 9 tabs with 5 lines each.</span><br>
             <span>You can make your decision in any order, and can go back to revise decisions before submitting.</span><br>
-            <span>After submission, one of these lines will be chosen at random for payment.</span>
+            <span>After submission, one of these lines will be chosen at random for payment.</span>-->
           </div>
           <!-- MENU SECTION -->
-          <div class="tabs is-small is-boxed">
+          <div class="tabs is-small is-toggle">
             <ul>
               {% for period in calendar %}
-              <li {% if period["label"]==label %}class="is-active"{%endif%}>
-                <a href="/calendar/{{loop.index0}}">
-                  {{period['label']}}</a>
+              {% set is_active = "is-active" if period["label"]==label else "" %}
+              {% set cal_index = "completed_calendar_{}".format(loop.index0) %}
+              {% set completed = progress[cal_index]!="" and progress[cal_index]==True %}
+              {% set color = "completed" if completed else "" %}
+              <li class="{{is_active}} {{color}}">
+                <a class="is-success" onclick="submit({{loop.index0}})">
+                  {{period['label']}}
+                </a>
               </li>
               {% endfor %}
             </ul>
@@ -88,9 +110,9 @@
           <div class="level">
             <div class="level-left">
               <div class="level-item">
-                <input required id="{{loop.index0}}-{{start}}" name="{{index}}-{{loop.index0}}-{{start}}" target="{{loop.index0}}-{{end}}"
-                  onchange="convex_handle(this)" onkeyup="convex_handle(this)" class="input inline-number is-small" type="number" step=1 min=0 max=50
-                  placeholder="25" />
+                <input required id="{{loop.index0}}-{{start}}" name="{{index}}-{{loop.index0}}-{{start}}"
+                  target="{{loop.index0}}-{{end}}" onchange="convex_handle(this)" onkeyup="convex_handle(this)"
+                  class="input inline-number is-small" type="number" step=1 min=0 max=50 placeholder="25" />
               </div>
               <div class="level-item">
                 <label class="label">Tokens at $0.{{start}} on {{early_label}}</label>
@@ -99,9 +121,9 @@
 
             <div class="level-right">
               <div class="level-item">
-                <input required id="{{loop.index0}}-{{end}}" name="{{index}}-{{loop.index0}}-{{end}}" target="{{loop.index0}}-{{start}}"
-                  onchange="convex_handle(this)" onkeyup="convex_handle(this)" class="input inline-number is-small" type="number" step=1 min=0 max=50
-                  placeholder="25" />
+                <input required id="{{loop.index0}}-{{end}}" name="{{index}}-{{loop.index0}}-{{end}}"
+                  target="{{loop.index0}}-{{start}}" onchange="convex_handle(this)" onkeyup="convex_handle(this)"
+                  class="input inline-number is-small" type="number" step=1 min=0 max=50 placeholder="25" />
               </div>
               <div class="level-item">
                 <label class="label">Tokens at $0.{{end}} on {{late_label}}</label>
@@ -134,7 +156,7 @@
       </div>
       <div class="level">
         <div class="level-item">
-          <button class="button is-success">Submit</button>
+          <button class="button is-success">Next</button>
         </div>
       </div>
   </form>
@@ -143,6 +165,7 @@
   <script>
     let early_date = "{{early}} 17:00:00"
     let late_date = "{{late}} 17:00:00"
+    
   </script>
   <script src="/static/js/calendar.js"></script>
 </footer>
