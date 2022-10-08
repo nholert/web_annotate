@@ -327,12 +327,18 @@ def submit_calendar_page():
     if completed:
         col = random.randint(0,len(calendar)-1)
         row = random.randint(0,len(calendar[col]['rates'])-1)
-        
-        early_rate,late_rate = calendar[col]['rates'][row]
         cal = calendar[col]
-        early_tokens = progress[f'calendar_{col}_{row}_{early_rate}']
-        late_tokens = progress[f'calendar_{col}_{row}_{late_rate}']
-        return render_template('final_page.html',progress=progress,col=col,row=row,cal=cal,early_rate=early_rate,late_rate=late_rate,early_tokens=early_tokens,late_tokens=late_tokens)
+        early_rate,late_rate = calendar[col]['rates'][row]
+        payout = {
+            'col': col,
+            'row': row,
+            'early_rate': early_rate,
+            'late_rate': late_rate,
+            'early_tokens': progress[f'calendar_{col}_{row}_{early_rate}'],
+            'late_tokens': progress[f'calendar_{col}_{row}_{late_rate}']
+        }
+        current_user.set_answer('payout',payout)
+        return render_template('final_page.html',progress=progress,cal=cal,**payout)
     
     start = time.time()
     return render_template('calendar.html',progress=progress,start_time=start,index=index,calendar=calendar,**date)
