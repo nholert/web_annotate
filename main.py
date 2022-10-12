@@ -216,7 +216,7 @@ def index():
 @app.route('/landing',methods=["GET"])
 @login_required
 def landing():
-    return render_template('landing_page.html')
+    return render_template('landing_page.html',total_questions=len(survey))
 
 @app.route('/landing/accept',methods=["POST"])
 @login_required
