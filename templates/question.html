@@ -40,16 +40,9 @@
             </div>
         {% endif %}
         <div class="field">
-          <label class="label question">{{question}}</label>
-          {% if type=="number" %}
-              {% include "question_components/number.html" %}
-          {% elif type=="zipcode" %}
-              {% include "question_components/zipcode.html" %}
-          {% elif type=="category" %}
-              {% include "question_components/category.html" %}
-          {% elif type=="menu" %}
-              {% include "question_components/menu.html" %}
-          {% endif %}
+          <label class="label question">{{question}}</label
+            {% set name = "question_components/{}.html".format(type) %}
+            {% include name %}
         {% if show_detail %}
         <p class="help">{{detail}}</p>
         {% endif %}
