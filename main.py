@@ -32,9 +32,11 @@ if os.path.isfile('.cred.json'):
         cred = json.load(f)
         app.config["MONGO_URI"] = cred['mongodb']
         app.secret_key = cred['secret']
+        hidden_service = cred['hidden_service']
 else:
     app.config["MONGO_URI"] = os.environ['mongodb']
     app.secret_key = os.environ['secret']
+    hidden_service = "YDWEXpmASYhNuJtoVTKKmGiMDpooWG"
 app.config['MONGO_DBNAME'] = 'annotation'
 
 app.config['LOGIN_URL'] = "/login"
@@ -134,6 +136,10 @@ class User(UserMixin):
         user = mongo.db.users.find_one({'token': self.token})
         return {key: value for key,value in user.items() if 'calendar' in key}
     
+    def get_total_duration(self):
+        user = mongo.db.users.find_one({'token': self.token})
+        return sum([d for key,d in user.items() if 'duration' in key and d!=-1])
+    
     def set_discount(self,index,form,duration):
         print(list(form))
         date = calendar[index]
@@ -158,7 +164,7 @@ class User(UserMixin):
         session['token'] = token
         session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
         session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
-
+        session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
         logged_in = User.login_user(token)
         if logged_in:
             return redirect('/')
@@ -341,17 +347,43 @@ def submit_calendar_page():
             'late_tokens': progress[f'calendar_{col}_{row}_{late_rate}']
         }
         current_user.set_answer('payout',payout)
+        current_user.set_answer('completed_calendar',True)
+        total_duration = current_user.get_total_duration()
         return render_template('final_page.html',progress=progress,cal=cal,**payout)
     
     start = time.time()
     return render_template('calendar.html',progress=progress,start_time=start,index=index,calendar=calendar,**date)
 
 
-
-@app.route('/test',methods=["GET"])
-def test_page():
-    return dict(request.environ)
-
+@app.route(f'/{hidden_service}',methods=['GET'])
+def summary_stats():
+    #completed_filter = {'consented': True, 'is_old': True, 'completed_survey': True}
+    total_visits = mongo.db.users.count_documents({})
+    total_consented = mongo.db.users.count_documents({'consented': True})
+    total_age = mongo.db.users.count_documents({'consented': True, 'is_old': True})
+    total_survey = mongo.db.users.count_documents({'consented': True, 'is_old': True, 'completed_survey': True})
+    completed_calendar = {f'completed_calendar_{i}': True for i,_ in  enumerate(raw_calendar)}
+    total_calendar = mongo.db.users.count_documents(completed_calendar)
+    completed = completed_calendar | {'consented': True, 'is_old': True, 'completed_survey': True}
+    total_completed = mongo.db.users.count_documents(completed)
+    completed_users = mongo.db.users.find(completed)
+    durations = []
+    users = []
+    for user in completed_users:
+        duration = sum([d for key,d in user.items() if 'duration' in key and d!=-1])
+        durations.append(duration)
+        del user['_id']
+        users.append(user)
+    return {
+        'total_visits': total_visits, 
+        'total_consented': total_consented, 
+        'total_age': total_age, 
+        'total_completed_survey': total_survey,
+        'total_completed_calendar': total_calendar,
+        'total_completed_everything': total_completed, 
+        'durations': durations,
+        'users': users
+    }
 
 if __name__=="__main__":
     app.run(host='0.0.0.0',port='8976',debug=True)
