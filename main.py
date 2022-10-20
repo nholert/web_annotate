@@ -36,7 +36,7 @@ if os.path.isfile('.cred.json'):
 else:
     app.config["MONGO_URI"] = os.environ['mongodb']
     app.secret_key = os.environ['secret']
-    hidden_service = "YDWEXpmASYhNuJtoVTKKmGiMDpooWG"
+    hidden_service = os.environ['hidden_service']
 app.config['MONGO_DBNAME'] = 'annotation'
 
 app.config['LOGIN_URL'] = "/login"
