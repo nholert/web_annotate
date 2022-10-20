@@ -27,13 +27,16 @@ transaction_id: user.get_id() or token
 
 app = Flask(__name__)
 application = app
-app.secret_key = '9TMZDPzyUpnu7ZN4X88k6mFiW4L3a4Lsijnv9CxFL4vBZcjzAxGvEtbwSJxCZY'
-app.config['MONGO_DBNAME'] = 'annotation'
 if os.path.isfile('.cred.json'):
-    app.config["MONGO_URI"] = json.load(open('.cred.json'))['mongodb']
+    with open('.cred.json') as f:
+        cred = json.load(f)
+        app.config["MONGO_URI"] = cred['mongodb']
+        app.secret_key = cred['secret']
 else:
     app.config["MONGO_URI"] = os.environ['mongodb']
-    
+    app.secret_key = os.environ['secret']
+app.config['MONGO_DBNAME'] = 'annotation'
+
 app.config['LOGIN_URL'] = "/login"
 
 mongo = PyMongo(app)
@@ -347,7 +350,7 @@ def submit_calendar_page():
 
 @app.route('/test',methods=["GET"])
 def test_page():
-    return dict(os.environ)
+    return dict(request.environ)
 
 
 if __name__=="__main__":
