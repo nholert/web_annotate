@@ -9,13 +9,6 @@
         "max": 99
     },
     {
-        "title": "Email",
-        "key": "email",
-        "question": "What is your email? (To send you your money upon completion)",
-        "detail": "Generally speaking, do you think of yourself as a...",
-        "type": "email"
-    },
-    {
         "title": "Gender",
         "key": "gender",
         "question": "What is your gender?",
@@ -333,5 +326,12 @@
             "Retired",
             "Other"
         ]
+    },
+    {
+        "title": "Email",
+        "key": "email",
+        "question": "What is your email? (To send you your money upon completion of the calendar section)",
+        "detail": "You MUST complete the following calendar sections in order recieve any reward.",
+        "type": "email"
     }
 ]

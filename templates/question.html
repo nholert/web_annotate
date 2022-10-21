@@ -43,9 +43,6 @@
           <label class="label question">{{question}}</label>
             {% set name = "question_components/{}.html".format(type) %}
             {% include name %}
-        {% if show_detail %}
-        <p class="help">{{detail}}</p>
-        {% endif %}
       </div>
      </div>
       <div class="section level">
