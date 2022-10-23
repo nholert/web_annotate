@@ -67,6 +67,16 @@ $(".datepicker-nav-previous").each((i,e)=>{
 });
 */
 
+const all_empty = ()=>{
+    var is_empty = false
+    $("input[type=number]").each((i,e)=>{
+        if ($(e).val()!=''){
+            console.log("This one is not:", e);
+            is_empty = true
+        }
+    })
+    return is_empty
+}
 const validate_form = ()=>{
     const msg = "Please fill out all token fields before changing pages."
     let alerted = false
@@ -91,7 +101,10 @@ const validate_form = ()=>{
 }
 
 const submit = (index)=>{
-    if (validate_form()){
+    if (all_empty()){
+        $("#next_index").val(index);
+        window.location.replace(`/calendar/${index}`);   
+    }else if (validate_form()){
         $("#next_index").val(index);
         $("#myForm").submit();
     }
