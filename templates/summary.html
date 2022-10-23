@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!-- 
+  Author: William Wyatt
+  License: GNU3
+  Purpose: WebUI to annodate. 
+-->
+<html>
+
+<head>
+  <title>Summary</title>
+  {% include "header.html" %}
+</head>
+
+<body>
+  <div class="content centering-column">
+    <section class="hero is-primary">
+      <div class="hero-body">
+        <p class="title">
+          Web Annotation Summary Page
+        </p>
+        <p class="subtitle">
+          Used for seeing an overview of the submitted surveys results.
+        </p>
+      </div>
+    </section>
+
+    <div class="section">
+      <div>
+        <ul>
+          <li>Total Visits: {{total_visits}}</li>
+          <li>Total Consented Users: {{total_consented}}</li>
+          <li>Total Over The Age of 18: {{total_age}}</li>
+          <li>Total Completed Survey: {{total_completed_survey}}</li>
+          <li>Total Completed Calendars: {{total_completed_calendar}}</li>
+          <li>Total Completed Survey & Calendar: {{total_completed_everything}}</li>
+        </ul>
+      </div>
+    </div>
+    <div class="section">
+      <div>
+        <div class="columns is-multiline">
+          {% for user in users %}
+          <div class="column is-full ">
+            <div class="card">
+
+              <div class="card-header">
+                <div class="card-header-title">
+                  #{{loop.index0}}: {{user['email']}}
+                </div>
+              </div>
+              <div class="card-content">
+                <div class="columns is-multiline is-justify-content-space-between">
+                  {% for question in survey %}
+                  {% if question['key']!='email' %}
+                  <div class="column is-narrow has-text-centered">
+                    <div class="field penny">
+                      <label class="label">{{question['title']}}</label>
+                      <span>{{user[question['key']]}}</span>
+                    </div>
+                  </div>
+                  {% endif %}
+                  {% endfor %}
+                </div>
+                <div class="columns is-multiline is-justify-content-center">
+                  {% for early,late,token in user['tokens'] %}
+                  <div class="column is-narrow has-text-centered">
+                    <b>{{early}}-{{late}}</b>
+                    {% for row,datum in token.items() %}
+                    <div class="penny">
+                      {% for rate,value in datum.items() %}
+                      <div>{{value}} 🪙 at $.{{rate}}</div>
+                      {% endfor %}
+                    </div>
+                    {% endfor %}
+                  </div>
+                  {% endfor %}
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+
+</html>

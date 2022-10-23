@@ -317,15 +317,8 @@ def calendar_page():
     #Track user progress
     calendar_name = f"completed_calendar_{index%len(calendar)}"
     this_calender_is_completed = calendar_name in progress and progress[calendar_name]==True
-    user_tokens = {}
-    if this_calender_is_completed:
-        for key,value in progress.items():
-            if f'calendar_{index%len(calendar)}' not in key: continue
-            if key == f'calendar_{index%len(calendar)}': continue
-            if 'completed' in key or 'duration' in key: continue
-            row,rate = key.replace(f'calendar_{index%len(calendar)}_','').split('_')
-            if row not in user_tokens: user_tokens[row] = {}
-            user_tokens[row][rate]=value
+   
+    user_tokens = get_user_tokens(progress,index) if this_calender_is_completed else {}
     
     start = time.time()
     return render_template('calendar.html',user_tokens=user_tokens,progress=progress,start_time=start,index=index,calendar=calendar,**date)
@@ -353,16 +346,8 @@ def submit_calendar_page():
     #Refreshing Users Progress
     calendar_name = f"completed_calendar_{index%len(calendar)}"
     this_calender_is_completed = calendar_name in progress and progress[calendar_name]==True
-    user_tokens = {}
-    if this_calender_is_completed:
-        for key,value in progress.items():
-            if f'calendar_{index%len(calendar)}' not in key: continue
-            if key == f'calendar_{index%len(calendar)}': continue
-            if 'completed' in key or 'duration' in key: continue
-            row,rate = key.replace(f'calendar_{index%len(calendar)}_','').split('_')
-            if row not in user_tokens: user_tokens[row] = {}
-            user_tokens[row][rate]=value
-            
+    user_tokens = get_user_tokens(progress,index) if this_calender_is_completed else {}
+                
     start = time.time()
     return render_template('calendar.html',user_tokens=user_tokens,progress=progress,start_time=start,index=index,calendar=calendar,completed=completed,**date)
 
@@ -393,7 +378,18 @@ def completed_calendar():
         return render_template('final_page.html',progress=progress,cal=cal,**payout)
     else:
         return redirect("/calendar")
-    
+
+def get_user_tokens(progress,index,date=False):
+    user_tokens = {}
+    for key,value in progress.items():
+            if f'calendar_{index%len(calendar)}' not in key: continue
+            if key == f'calendar_{index%len(calendar)}': continue
+            if 'completed' in key or 'duration' in key: continue
+            row,rate = key.replace(f'calendar_{index%len(calendar)}_','').split('_')
+            if row not in user_tokens: user_tokens[row] = {}
+            user_tokens[row][rate]=value
+    return user_tokens
+
 @app.route(f'/{hidden_service}',methods=['GET'])
 def summary_stats():
     #completed_filter = {'consented': True, 'is_old': True, 'completed_survey': True}
@@ -412,8 +408,9 @@ def summary_stats():
         duration = sum([d for key,d in user.items() if 'duration' in key and d!=-1])
         durations.append(duration)
         del user['_id']
+        user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i)) for i,cal in enumerate(calendar)]
         users.append(user)
-    return {
+    summmary = {
         'total_visits': total_visits, 
         'total_consented': total_consented, 
         'total_age': total_age, 
@@ -423,6 +420,7 @@ def summary_stats():
         'durations': durations,
         'users': users
     }
+    return render_template('summary.html',survey=survey,calendar=calendar,**summmary)
 
 if __name__=="__main__":
     app.run(host='0.0.0.0',port='8976',debug=True)

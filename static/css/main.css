@@ -54,3 +54,8 @@ button, button:focus{
     color: green;
     background-color: #0001;
 }
+.penny{
+    border: 1px dotted #cccc;
+    padding: .5rem;
+    border-radius:.25rem;
+}
