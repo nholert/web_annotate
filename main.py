@@ -406,6 +406,7 @@ def summary_stats():
         user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i)) for i,cal in enumerate(calendar)]
         users.append(user)
     summmary = {
+        'query': completed_calendar,
         'total_visits': total_visits, 
         'total_consented': total_consented, 
         'total_age': total_age, 
