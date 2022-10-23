@@ -27,12 +27,7 @@ const convex_handle = (self)=>{
     $(`#${self_id}-result`).text(`\$${(self_rate * self.val()).toFixed(2)}`)
     $(`#${target_id}-result`).text(`\$${(target_rate * target.val()).toFixed(2)}`)
 }
-$('input[type="number"]').each((_,e)=>{
-    e = $(e)
-    if (validate(e.val())){
-        convex_handle(e)
-    }
-})
+
 
 
 /* Calendar */
@@ -102,3 +97,18 @@ const submit = (index)=>{
     }
 }
 
+if (Object.keys(user_tokens).length > 0){
+    //user_tokens is the data we need to populate the page.
+    $.each(user_tokens,(row,token_rates)=>{
+        $.each(token_rates,(rate,token)=>{
+            $(`#${row}-${rate}`).val(token)
+        })
+    })
+}
+
+$('input[type="number"]').each((_,e)=>{
+    e = $(e)
+    if (validate(e.val())){
+        convex_handle(e)
+    }
+})

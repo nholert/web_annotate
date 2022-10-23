@@ -12,7 +12,7 @@ from wtforms import validators
 from bson.objectid import ObjectId
 from urllib.parse import urlparse, urljoin
 from flask.sessions import SecureCookieSessionInterface
-
+import numpy as np
 """
 Endpoint: https://spectrumsurveys.com/surveydone
 st: {
@@ -313,8 +313,22 @@ def calendar_page():
     index = session.get('calendar_index',0)
     date = calendar[index]
     progress = current_user.get_progress()
+    
+    #Track user progress
+    calendar_name = f"completed_calendar_{index%len(calendar)}"
+    this_calender_is_completed = calendar_name in progress and progress[calendar_name]==True
+    user_tokens = {}
+    if this_calender_is_completed:
+        for key,value in progress.items():
+            if f'calendar_{index%len(calendar)}' not in key: continue
+            if key == f'calendar_{index%len(calendar)}': continue
+            if 'completed' in key or 'duration' in key: continue
+            row,rate = key.replace(f'calendar_{index%len(calendar)}_','').split('_')
+            if row not in user_tokens: user_tokens[row] = {}
+            user_tokens[row][rate]=value
+    
     start = time.time()
-    return render_template('calendar.html',progress=progress,start_time=start,index=index,calendar=calendar,**date)
+    return render_template('calendar.html',user_tokens=user_tokens,progress=progress,start_time=start,index=index,calendar=calendar,**date)
 
 @app.route('/calendar',methods=["POST"])
 @login_required
@@ -329,6 +343,33 @@ def submit_calendar_page():
     
     index = int(next_index)
     date = calendar[index%len(calendar)]
+    
+    #General Progress
+    progress = current_user.get_progress()
+    completed_count = sum([1 for key,value in progress.items() if "completed_calendar" in key and value==True])
+    progress['percentage'] = f'{round(completed_count/len(calendar)*100)}'
+    completed = completed_count == len(calendar)
+    
+    #Refreshing Users Progress
+    calendar_name = f"completed_calendar_{index%len(calendar)}"
+    this_calender_is_completed = calendar_name in progress and progress[calendar_name]==True
+    user_tokens = {}
+    if this_calender_is_completed:
+        for key,value in progress.items():
+            if f'calendar_{index%len(calendar)}' not in key: continue
+            if key == f'calendar_{index%len(calendar)}': continue
+            if 'completed' in key or 'duration' in key: continue
+            row,rate = key.replace(f'calendar_{index%len(calendar)}_','').split('_')
+            if row not in user_tokens: user_tokens[row] = {}
+            user_tokens[row][rate]=value
+            
+    start = time.time()
+    return render_template('calendar.html',user_tokens=user_tokens,progress=progress,start_time=start,index=index,calendar=calendar,completed=completed,**date)
+
+
+@app.route(f'/completed',methods=['GET','POST'])
+@login_required
+def completed_calendar():
     progress = current_user.get_progress()
     completed_count = sum([1 for key,value in progress.items() if "completed_calendar" in key and value==True])
     progress['percentage'] = f'{round(completed_count/len(calendar)*100)}'
@@ -350,11 +391,9 @@ def submit_calendar_page():
         current_user.set_answer('completed_calendar',True)
         total_duration = current_user.get_total_duration()
         return render_template('final_page.html',progress=progress,cal=cal,**payout)
+    else:
+        return redirect("/calendar")
     
-    start = time.time()
-    return render_template('calendar.html',progress=progress,start_time=start,index=index,calendar=calendar,**date)
-
-
 @app.route(f'/{hidden_service}',methods=['GET'])
 def summary_stats():
     #completed_filter = {'consented': True, 'is_old': True, 'completed_survey': True}
