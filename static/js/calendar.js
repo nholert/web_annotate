@@ -68,11 +68,10 @@ $(".datepicker-nav-previous").each((i,e)=>{
 */
 
 const all_empty = ()=>{
-    var is_empty = false
+    var is_empty = true
     $("input[type=number]").each((i,e)=>{
         if ($(e).val()!=''){
-            console.log("This one is not:", e);
-            is_empty = true
+            is_empty = false
         }
     })
     return is_empty

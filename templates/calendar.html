@@ -41,7 +41,7 @@
                 </div>
               </div>
               <div class="level-right">
-                <span>{{progress['percentage']}}% completed.</span>
+                <span>{{progress['percentage']}} completed.</span>
               </div>
             </div>
 
@@ -164,7 +164,9 @@
       <div class="footer">
         <div class="level">
           <div class="level-item">
-            <button class="button is-link is-light">Previous</button>
+            <a class="button is-link is-light" onclick="submit({{index-1}})">
+              Previous (Save)
+            </a>
           </div>
 
           {% if completed %}
@@ -173,7 +175,7 @@
           </div>
           {% endif %}
           <div class="level-item">
-            <button class="button is-link is-light">Next</button>
+            <button class="button is-link is-light">Next (Save)</button>
           </div>
         </div>
         <div class="level is-justify-content-center">
@@ -196,6 +198,12 @@
         </div>
       </div>
   </form>
+
+  {% if completed %}
+  <div class="fab">
+    <a class="" href="/completed"><span class="button is-success">Submit Survey</span></a>
+  </div>
+  {% endif %}
 </body>
 <footer>
   <script>

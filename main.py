@@ -310,17 +310,8 @@ def calendar_page():
     if not current_user.has_consent():
         return redirect('/landing')
     index = session.get('calendar_index',0)
-    date = calendar[index]
-    progress = current_user.get_progress()
-    
-    #Track user progress
-    calendar_name = f"completed_calendar_{index%len(calendar)}"
-    this_calender_is_completed = calendar_name in progress and progress[calendar_name]==True
-   
-    user_tokens = get_user_tokens(progress,index) if this_calender_is_completed else {}
-    
-    start = time.time()
-    return render_template('calendar.html',user_tokens=user_tokens,progress=progress,start_time=start,index=index,calendar=calendar,**date)
+    index = int(index)%len(calendar)
+    return process_calendar(index)
 
 @app.route('/calendar',methods=["POST"])
 @login_required
@@ -332,21 +323,26 @@ def submit_calendar_page():
     duration = time.time()-float(request.form.get('start_time',None))
     
     current_user.set_discount(int(index)%len(calendar),request.form,duration)
-    
     index = int(next_index)
-    date = calendar[index%len(calendar)]
     
-    #General Progress
+    return process_calendar(index)
+    
+    
+def process_calendar(index):  
+    index = int(index)%len(calendar)
+    date = calendar[index]
+    
+     #General Progress
     progress = current_user.get_progress()
-    completed_count = sum([1 for key,value in progress.items() if "completed_calendar" in key and value==True])
-    progress['percentage'] = f'{round(completed_count/len(calendar)*100)}'
-    completed = completed_count == len(calendar)
+    completed_count = sum([1 for key,value in progress.items() if "completed_calendar_" in key and value==True])
+    progress['percentage'] = f'{completed_count/len(calendar):2.0%}'
+    completed = completed_count >= len(calendar)
     
     #Refreshing Users Progress
-    calendar_name = f"completed_calendar_{index%len(calendar)}"
+    calendar_name = f"completed_calendar_{index}"
     this_calender_is_completed = calendar_name in progress and progress[calendar_name]==True
     user_tokens = get_user_tokens(progress,index) if this_calender_is_completed else {}
-                
+    
     start = time.time()
     return render_template('calendar.html',user_tokens=user_tokens,progress=progress,start_time=start,index=index,calendar=calendar,completed=completed,**date)
 
@@ -355,9 +351,9 @@ def submit_calendar_page():
 @login_required
 def completed_calendar():
     progress = current_user.get_progress()
-    completed_count = sum([1 for key,value in progress.items() if "completed_calendar" in key and value==True])
-    progress['percentage'] = f'{round(completed_count/len(calendar)*100)}'
-    completed = completed_count == len(calendar)
+    completed_count = sum([1 for key,value in progress.items() if "completed_calendar_" in key and value==True])
+    progress['percentage'] = f'{completed_count/len(calendar):2.0%}'
+    completed = completed_count >= len(calendar)
     if completed:
         col = random.randint(0,len(calendar)-1)
         row = random.randint(0,len(calendar[col]['rates'])-1)
