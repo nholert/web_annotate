@@ -38,6 +38,13 @@
     </div>
     <div class="section">
       <div id="toc">
+        <div class="level block">
+          <div class="level-item">
+            <a href="#errors"><button class="button is-warning">Go To Error List</button></a>
+          </div>
+          <div class="block"></div>
+        </div>
+
         <ul>
           {% for user in users %}
           <li class="columns">
@@ -67,7 +74,7 @@
         <div class="columns is-multiline">
           {% for user in users %}
           <div id="user-{{loop.index0}}" class="column is-full ">
-            <div  class="card">
+            <div class="card">
 
               <div class="card-header">
                 <div class="card-header-title">
@@ -120,6 +127,29 @@
                 </div>
               </div>
             </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div id="errors" class="section">
+        <title class="title">Consolodated Errors:</title>
+        <div class="block">
+          {% for user in users %}
+          <div class="columns">
+            {% if user['validation']['error']==true %}
+            <div class="column is-half">
+              <a href="#user-{{loop.index0}}">[#{{loop.index0}}] {{user['email']}}</a> ({{user['token']}})
+            </div>
+            <div class="column is-half">
+              {% if user['validation']['error']==true %}
+              <span style="color: red;">
+                <span>{{user['validation']['message']}}</span><br>
+              </span>
+              {% elif user['payout']['bad'] %}
+              <span style="color: red;">Payout is bad!</span>
+              {% endif %}
+            </div>
+            {%endif%}
           </div>
           {% endfor %}
         </div>
