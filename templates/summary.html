@@ -37,11 +37,34 @@
       </div>
     </div>
     <div class="section">
+      <div id="toc">
+        <ul>
+          {% for user in users: %}
+          <li class="columns">
+            <div class="column is-half">
+              <a href="#user-{{loop.index0}}">#{{loop.index0}}: {{user['email']}}</a> ({{user['token']}})
+            </div>
+            <div class="column is-half">
+              {% if user['payout']['bad'] %}
+              <span style="color: red;">Payout is bad!<br>This person should be removed for quality.</span>
+              {% elif user['bad_calendar'] %}
+              <span style="color: red;">Some calendar data is bad!<br>This person should be removed for quality.</span>
+              {% else %}
+              <span>On {{user['payout']['early_label']}} pay {{user['payout']['early_tokens']}} tokens at
+                $0.{{user['payout']['early_rate']}} for {{user['payout']['early_payout']}}</span><br>
+              <span>On {{user['payout']['late_label']}} pay {{user['payout']['late_tokens']}} tokens at
+                $0.{{user['payout']['late_rate']}} for {{user['payout']['late_payout']}}</span>
+              {% endif %}
+            </div>
+          </li>
+          {% endfor %}
+        </ul>
+      </div>
       <div>
         <div class="columns is-multiline">
           {% for user in users %}
           <div class="column is-full ">
-            <div class="card">
+            <div id="#user-{{loop.index0}}" class="card">
 
               <div class="card-header">
                 <div class="card-header-title">
@@ -65,6 +88,7 @@
                   {% for early,late,token in user['tokens'] %}
                   <div class="column is-narrow has-text-centered">
                     <b>{{early}}-{{late}}</b>
+                    {% if token is not none %}
                     {% for row,datum in token.items() %}
                     <div class="penny">
                       {% for rate,value in datum.items() %}
@@ -72,6 +96,11 @@
                       {% endfor %}
                     </div>
                     {% endfor %}
+                    {% else %}
+                    <div class="penny">
+                      <span style="color: red;">MISSING TOKENS!</span>
+                    </div>
+                    {% endif %}
                   </div>
                   {% endfor %}
                   <div class="column is-narrow has-text-centered">
@@ -79,20 +108,20 @@
                     {% if user['payout']['bad'] %}
                     <span>Payout is bad!<br>This person should be removed for quality.</span>
                     {% else %}
-                    <span>On {{user['payout']['early_label']}} pay {{user['payout']['early_tokens']}} tokens at $0.{{user['payout']['early_rate']}} for {{user['payout']['early_payout']}}</span><br>
-                    <span>On {{user['payout']['late_label']}} pay {{user['payout']['late_tokens']}} tokens at $0.{{user['payout']['late_rate']}} for {{user['payout']['late_payout']}}</span>
+                    <span>On {{user['payout']['early_label']}} pay {{user['payout']['early_tokens']}} tokens at
+                      $0.{{user['payout']['early_rate']}} for {{user['payout']['early_payout']}}</span><br>
+                    <span>On {{user['payout']['late_label']}} pay {{user['payout']['late_tokens']}} tokens at
+                      $0.{{user['payout']['late_rate']}} for {{user['payout']['late_payout']}}</span>
                     {% endif %}
                   </div>
                 </div>
               </div>
             </div>
-            {% endfor %}
-            <
           </div>
+          {% endfor %}
         </div>
       </div>
     </div>
-  </div>
 </body>
 
 </html>
