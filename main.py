@@ -426,7 +426,7 @@ def validate_user(user):
         total_bad_calendars = len(bad_calendars)
         bad_calendars = "Calendars: "+','.join(bad_calendars)
         return {
-                "error": True, 
+                "error": False, 
                 "key": "variance",
                 "message": f"Zero variance detected! Count({total_bad_calendars})", 
                 "submessage": bad_calendars,
