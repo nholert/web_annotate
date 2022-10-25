@@ -1,6 +1,6 @@
 from werkzeug.middleware.proxy_fix import ProxyFix
 import json,os,hashlib,datetime,time,logging
-import flask,requests,uuid,datetime,random
+import flask,requests,uuid,datetime,random,statistics
 from flask import Blueprint,Flask,request,redirect,render_template,session,flash,abort,make_response
 from flask_pymongo import PyMongo
 from flask_wtf.csrf import CSRFProtect
@@ -380,7 +380,7 @@ def completed_calendar():
     else:
         return redirect("/calendar")
 
-def get_user_tokens(progress,index,validate=False):
+def get_user_tokens(progress,index):
     user_tokens = {}
     for key,value in progress.items():
             if f'calendar_{index%len(calendar)}' not in key: continue
@@ -388,14 +388,38 @@ def get_user_tokens(progress,index,validate=False):
             if 'completed' in key or 'duration' in key: continue
             row,rate = key.replace(f'calendar_{index%len(calendar)}_','').split('_')
             if row not in user_tokens: user_tokens[row] = {}
-            if validate:
-                try:
-                    user_tokens[row][rate]=int(value)
-                except:
-                    return None
-            else:
-                user_tokens[row][rate]=value
+            user_tokens[row][rate]=value
     return user_tokens
+
+def validate_user(user):
+    all_calendars = [cal for e,l,cal in user['tokens']]
+    no_error = {"error": False, "message": "Valid data", "data": None}
+    calendar_variance = []
+    for i,cal in enumerate(all_calendars):
+        tokens = []
+        for row,rates in cal.items():
+            for rate,value in rates.items():
+                try:
+                    value = float(value)
+                    tokens.append(value)
+                except Exception as e:
+                    return {
+                        "error": True, 
+                        "message": "Invalid calendar data!",
+                        "submessage": "Missing token allocations.",
+                        }
+        calendar_variance.append(statistics.variance(tokens))
+    if sum([var < .01 for var in calendar_variance]) > 0:
+        bad_calendars = "Calendars: "+','.join([f'#{i} ' for i,var in enumerate(calendar_variance) if var<.01])
+        return {
+                "error": True, 
+                "message": f"Zero variance detected!", 
+                "submessage": bad_calendars,
+                "data": calendar_variance
+                }
+    return no_error
+        
+        
 
 @app.route(f'/{hidden_service}/test',methods=['GET'])
 def test_stats():
@@ -420,8 +444,8 @@ def summary_stats():
         duration = sum([d for key,d in user.items() if 'duration' in key and d!=-1])
         durations.append(duration)
         del user['_id']
-        user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i,validate=True)) for i,cal in enumerate(calendar)]
-        
+        user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i)) for i,cal in enumerate(calendar)]
+        user['validation'] = validate_user(user)
         if 'payout' not in user: continue
         payout=user['payout']
         payout['early_label'] = calendar[payout['col']]['early_label']
@@ -433,7 +457,6 @@ def summary_stats():
         except:
             payout['bad'] = True
         user['payout'] = payout
-        user['bad_calendar'] = sum([1 for _,_,t in user['tokens'] if t is None])>0
         users.append(user)
     summmary = {
         'query': completed_calendar,
