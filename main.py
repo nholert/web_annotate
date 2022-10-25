@@ -397,23 +397,28 @@ def validate_user(user):
     calendar_variance = []
     for i,cal in enumerate(all_calendars):
         tokens = []
+        first_tokens = []
+        second_tokens = []
         for row,rates in cal.items():
-            for rate,value in rates.items():
+            for i,(rate,value) in enumerate(rates.items()):
+                bucket = first_tokens if i==0 else second_tokens
                 try:
                     value = float(value)
                     tokens.append(value)
+                    bucket.append(value)
                 except Exception as e:
                     return {
                         "error": True, 
                         "message": "Invalid calendar data!",
                         "submessage": "Missing token allocations.",
                         }
-        calendar_variance.append(statistics.variance(tokens))
+                        
+        calendar_variance.append(statistics.variance(first_tokens)*statistics.variance(second_tokens))
     if sum([var < .01 for var in calendar_variance]) > 0:
         bad_calendars = "Calendars: "+','.join([f'#{i} ' for i,var in enumerate(calendar_variance) if var<.01])
         return {
                 "error": True, 
-                "message": f"Zero variance detected!", 
+                "message": f"Zero variance detected! Count({len(calendar_variance)})", 
                 "submessage": bad_calendars,
                 "data": calendar_variance
                 }
