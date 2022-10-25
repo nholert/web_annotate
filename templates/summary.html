@@ -42,6 +42,9 @@
           <div class="level-item">
             <a href="#errors"><button class="button is-warning">Go To Error List</button></a>
           </div>
+          <div class="level-item">
+            <a href="#mapping"><button class="button is-warning">ID to Transaction ID</button></a>
+          </div>
           <div class="block"></div>
         </div>
 
@@ -57,8 +60,6 @@
                 <span>{{user['validation']['message']}}</span><br>
                 {% if user['validation']['submessage'] %}<span>{{user['validation']['submessage']}}</span>{%endif%}
               </span>
-              {% elif user['payout']['bad'] %}
-              <span style="color: red;">Payout is bad!<br>This person should be removed for quality.</span>
               {% else %}
               <span>On {{user['payout']['early_label']}} pay {{user['payout']['early_tokens']}} tokens at
                 $0.{{user['payout']['early_rate']}} for {{user['payout']['early_payout']}}</span><br>
@@ -141,16 +142,23 @@
               <a href="#user-{{loop.index0}}">[#{{loop.index0}}] {{user['email']}}</a> ({{user['token']}})
             </div>
             <div class="column is-half">
-              {% if user['validation']['error']==true %}
               <span style="color: red;">
                 <span>{{user['validation']['message']}}</span><br>
               </span>
-              {% elif user['payout']['bad'] %}
-              <span style="color: red;">Payout is bad!</span>
-              {% endif %}
             </div>
             {%endif%}
           </div>
+          {% endfor %}
+        </div>
+      </div>
+      <div id="mapping" class="section">
+        <title class="title"># to transaction_id:</title>
+        <div class="block">
+          <label class="label">ID,transaction_id</label>
+          {% for user in users %}
+          <span>
+            {{loop.index0}},{{user['token']}}
+          </span><br>
           {% endfor %}
         </div>
       </div>
