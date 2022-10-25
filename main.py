@@ -362,7 +362,7 @@ def completed_calendar():
     completed = completed_count >= len(calendar)
     validation = validate_user(progress)
     current_user.set_answer('validation',validation)
-    if validation['error']:
+    if validation['error'] and validation['key']=="invalid_calendar":
         return redirect(session['quality'])
     elif completed:
         col = random.randint(0,len(calendar)-1)
@@ -415,6 +415,7 @@ def validate_user(user):
                 except Exception as e:
                     return {
                         "error": True, 
+                        "key": "invalid_calendar",
                         "message": "Invalid calendar data!",
                         "submessage": "Missing token allocations.",
                         }
@@ -426,6 +427,7 @@ def validate_user(user):
         bad_calendars = "Calendars: "+','.join(bad_calendars)
         return {
                 "error": True, 
+                "key": "variance",
                 "message": f"Zero variance detected! Count({total_bad_calendars})", 
                 "submessage": bad_calendars,
                 "data": calendar_variance
