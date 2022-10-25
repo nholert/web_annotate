@@ -45,7 +45,7 @@
 
               <div class="card-header">
                 <div class="card-header-title">
-                  #{{loop.index0}}: {{user['email']}}
+                  #{{loop.index0}}: {{user['email']}} Transaction_id({{user['token']}})
                 </div>
               </div>
               <div class="card-content">
@@ -74,10 +74,20 @@
                     {% endfor %}
                   </div>
                   {% endfor %}
+                  <div class="column is-narrow has-text-centered">
+                    <label class="label">Payout</label>
+                    {% if user['payout']['bad'] %}
+                    <span>Payout is bad; this peson show be removed for quality.</span>
+                    {% else %}
+                    <span>On {{user['payout']['early_label']}} pay {{user['payout']['early_tokens']}} tokens at $0.{{user['payout']['early_rate']}} for {{user['payout']['early_payout']}}</span><br>
+                    <span>On {{user['payout']['late_label']}} pay {{user['payout']['late_tokens']}} tokens at $0.{{user['payout']['late_rate']}} for {{user['payout']['late_payout']}}</span>
+                    {% endif %}
+                  </div>
                 </div>
               </div>
             </div>
             {% endfor %}
+            <
           </div>
         </div>
       </div>

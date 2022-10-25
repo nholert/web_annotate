@@ -80,7 +80,7 @@ raw_calendar,calendar = process_calendar_data()
 def get_ip():
     logging.error(str(request.environ))
     logging.warning(str(request.remote_addr))
-    return request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+    return request.environ.get('HTTP_X_REAL_IP', request.environ.get("REMOTE_ADDR",request.remote_addr))
 
 class User(UserMixin):
     def __init__(self, token):
@@ -180,6 +180,7 @@ class User(UserMixin):
         user = mongo.db.users.find_one({'token': token})
         timestamp = datetime.datetime.now()
         ip_addr = get_ip()
+        agent = request.headers.get('User-Agent')
         if user is None:
             mongo.db.users.insert_one({
                 'token': token,
@@ -187,8 +188,11 @@ class User(UserMixin):
                 'created_at': timestamp,
                 'accessed_ip': ip_addr,
                 'accessed_at': timestamp,
+                'created_user_agent': agent,
+                'last_user_agent': agent,
                 'login_ips': [ip_addr],
-                'login_timestamps': [timestamp]
+                'login_timestamps': [timestamp],
+                'user_agents': [agent]
             })
             login_user(User(token))
         elif password == user['password']:
@@ -196,10 +200,12 @@ class User(UserMixin):
                 '$push': {
                     'login_ips': ip_addr,
                     'login_timestamps': timestamp,
+                    'user_agents': agent
                 },
                 '$set': {
                     'accessed_at': timestamp,
-                    'accessed_ip': ip_addr
+                    'accessed_ip': ip_addr,
+                    'last_user_agent': user_agent
                 }
             })
             login_user(User(token))
@@ -385,9 +391,14 @@ def get_user_tokens(progress,index,date=False):
             user_tokens[row][rate]=value
     return user_tokens
 
+@app.route(f'/{hidden_service}/test',methods=['GET'])
+def test_stats():
+    #dict(str(request.environ) | dict(os.environ))
+    return str(request.environ)
+
 @app.route(f'/{hidden_service}',methods=['GET'])
 def summary_stats():
-    #completed_filter = {'consented': True, 'is_old': True, 'completed_survey': True}
+    #completed_filter = {'consented': True, 'is_old': True,payout 'completed_survey': True}
     total_visits = mongo.db.users.count_documents({})
     total_consented = mongo.db.users.count_documents({'consented': True})
     total_age = mongo.db.users.count_documents({'consented': True, 'is_old': True})
@@ -404,6 +415,19 @@ def summary_stats():
         durations.append(duration)
         del user['_id']
         user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i)) for i,cal in enumerate(calendar)]
+        if 'payout' not in user: continue
+        payout=user['payout']
+        payout['early_label'] = calendar[payout['col']]['early_label']
+        payout['late_label'] = calendar[payout['col']]['late_label']
+        
+        payout['bad'] = False
+        try:
+            payout['early_payout'] = f"${float(payout['early_tokens'])*float(payout['early_rate'])/100:.02f}"
+            payout['late_payout'] = f"${float(payout['late_tokens'])*float(payout['late_rate'])/100:.02f}"
+        except:
+            payout['bad'] == True
+        payout['bad'] = False
+        user['payout'] = payout
         users.append(user)
     summmary = {
         'query': completed_calendar,
