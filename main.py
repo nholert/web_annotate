@@ -415,10 +415,12 @@ def validate_user(user):
                         
         calendar_variance.append(statistics.variance(first_tokens)*statistics.variance(second_tokens))
     if sum([var < .01 for var in calendar_variance]) > 0:
-        bad_calendars = "Calendars: "+','.join([f'#{i} ' for i,var in enumerate(calendar_variance) if var<.01])
+        bad_calendars = [f'#{i} ' for i,var in enumerate(calendar_variance) if var<.01]
+        total_bad_calendars = len(bad_calendars)
+        bad_calendars = "Calendars: "+','.join(bad_calendars)
         return {
                 "error": True, 
-                "message": f"Zero variance detected! Count({len(calendar_variance)})", 
+                "message": f"Zero variance detected! Count({total_bad_calendars})", 
                 "submessage": bad_calendars,
                 "data": calendar_variance
                 }
@@ -445,6 +447,7 @@ def summary_stats():
     completed_users = mongo.db.users.find(completed)
     durations = []
     users = []
+    total_completed_without_error = 0
     for user in completed_users:
         duration = sum([d for key,d in user.items() if 'duration' in key and d!=-1])
         durations.append(duration)
@@ -462,6 +465,8 @@ def summary_stats():
         except:
             payout['bad'] = True
         user['payout'] = payout
+        if not payout['bad'] and not user['validation']['error']:
+            total_completed_without_error+=1
         users.append(user)
     summmary = {
         'query': completed_calendar,
@@ -471,6 +476,7 @@ def summary_stats():
         'total_completed_survey': total_survey,
         'total_completed_calendar': total_calendar,
         'total_completed_everything': total_completed, 
+        'total_completed_without_error': total_completed_without_error,
         'durations': durations,
         'users': users
     }
