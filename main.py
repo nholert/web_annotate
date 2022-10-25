@@ -360,7 +360,11 @@ def completed_calendar():
     completed_count = sum([1 for key,value in progress.items() if "completed_calendar_" in key and value==True])
     progress['percentage'] = f'{completed_count/len(calendar):2.0%}'
     completed = completed_count >= len(calendar)
-    if completed:
+    validation = validate_user(progress)
+    current_user.set_answer('validation',validation)
+    if validation['error']:
+        return redirect(session['quality'])
+    elif completed:
         col = random.randint(0,len(calendar)-1)
         row = random.randint(0,len(calendar[col]['rates'])-1)
         cal = calendar[col]
@@ -392,6 +396,8 @@ def get_user_tokens(progress,index):
     return user_tokens
 
 def validate_user(user):
+    if 'tokens' not in user:
+            user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i)) for i,cal in enumerate(calendar)]
     all_calendars = [cal for e,l,cal in user['tokens']]
     no_error = {"error": False, "message": "Valid data", "data": None}
     calendar_variance = []
