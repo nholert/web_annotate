@@ -425,8 +425,7 @@ def summary_stats():
             payout['early_payout'] = f"${float(payout['early_tokens'])*float(payout['early_rate'])/100:.02f}"
             payout['late_payout'] = f"${float(payout['late_tokens'])*float(payout['late_rate'])/100:.02f}"
         except:
-            payout['bad'] == True
-        payout['bad'] = False
+            payout['bad'] = True
         user['payout'] = payout
         users.append(user)
     summmary = {
