@@ -33,7 +33,6 @@
           <li>Total Completed Survey: {{total_completed_survey}}</li>
           <li>Total Completed Calendars: {{total_completed_calendar}}</li>
           <li>Total Completed Survey & Calendar: {{total_completed_everything}}</li>
-          <li>Total Completed Without Error: {{total_completed_without_error}}</li>
         </ul>
       </div>
     </div>
@@ -42,9 +41,6 @@
         <div class="level block">
           <div class="level-item">
             <a href="#errors"><button class="button is-warning">Go To Error List</button></a>
-          </div>
-          <div class="level-item">
-            <a href="#mapping"><button class="button is-warning">ID to Transaction ID</button></a>
           </div>
           <div class="block"></div>
         </div>
@@ -155,11 +151,12 @@
       <div id="mapping" class="section">
         <title class="title"># to transaction_id:</title>
         <div class="block">
-          <label class="label">ID,transaction_id</label>
           {% for user in users %}
-          <span>
-            {{loop.index0}},{{user['token']}}
-          </span><br>
+            <div class="column is-full">
+              {{loop.index0}},{{user['token']}}
+            </div>
+            {%endif%}
+          </div>
           {% endfor %}
         </div>
       </div>

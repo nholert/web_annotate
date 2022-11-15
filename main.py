@@ -51,7 +51,8 @@ survey = json.load(open('survey.json'))
 
 def process_calendar_data():
     data = json.load(open('calendar.json'))
-    start_date = datetime.date(2022,10,25)
+    #start_date = datetime.date(2022,10,25) #Round 1
+    start_date = datetime.date(2022,11,22) #Round 2
     calendar = []
     fmt = "%b %d"
     for period in data:
