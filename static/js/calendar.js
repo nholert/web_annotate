@@ -46,7 +46,7 @@ const options = {
     date: new Date(late_date),
 };
 const calendars = bulmaCalendar.attach('[type="date"]', options);
-if (options.startDate.getMonth()==12){
+if (options.startDate.getMonth()==10){
     $(".datepicker-nav-next","#second-calendar").click()
     $(".datepicker-nav-next","#third-calendar").click().click()
     $(".datepicker-nav-next","#fourth-calendar").click().click().click()
