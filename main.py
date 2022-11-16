@@ -48,11 +48,11 @@ login_manager.login_message = u"Bonvolu ensaluti por uzi tiun paĝon."
 csrf = CSRFProtect(app)
 
 survey = json.load(open('survey.json'))
-
+START_DATE = datetime.date(2022,11,22)
 def process_calendar_data():
     data = json.load(open('calendar.json'))
     #start_date = datetime.date(2022,10,25) #Round 1
-    start_date = datetime.date(2022,11,22) #Round 2
+    start_date = START_DATE #Round 2
     calendar = []
     fmt = "%b %d"
     for period in data:
@@ -190,6 +190,8 @@ class User(UserMixin):
                 'accessed_ip': ip_addr,
                 'accessed_at': timestamp,
                 'created_user_agent': agent,
+                'round': 2,
+                'start_date': START_DATE,
                 'last_user_agent': agent,
                 'login_ips': [ip_addr],
                 'login_timestamps': [timestamp],
