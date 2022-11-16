@@ -73,22 +73,24 @@
             <span>You can make your decision in any order, and can go back to revise decisions before submitting.</span><br>
             <span>After submission, one of these lines will be chosen at random for payment.</span>-->
           </div>
-          <!-- MENU SECTION -->
           <div class="level">
-            <div class="level-item tabs is-small is-toggle is-justify-content-center">
-              <ul>
-                {% for period in calendar %}
-                {% set is_active = "is-active" if period["label"]==label else "" %}
-                {% set cal_index = "completed_calendar_{}".format(loop.index0) %}
-                {% set completed = progress[cal_index]!="" and progress[cal_index]==True %}
-                {% set color = "completed" if completed else "" %}
-                <li class="{{is_active}} {{color}}">
-                  <a class="is-success" onclick="submit({{loop.index0}})">
-                    {{period['label']}}
-                  </a>
-                </li>
-                {% endfor %}
-              </ul>
+            <!-- MENU SECTION -->
+            <div class="level-item is-justify-content-center">
+              <div class="tabs is-small is-toggle">
+                <ul>
+                  {% for period in calendar %}
+                  {% set is_active = "is-active" if period["label"]==label else "" %}
+                  {% set cal_index = "completed_calendar_{}".format(loop.index0) %}
+                  {% set completed = progress[cal_index]!="" and progress[cal_index]==True %}
+                  {% set color = "completed" if completed else "" %}
+                  <li class="{{is_active}} {{color}}">
+                    <a class="is-success" onclick="submit({{loop.index0}})">
+                      {{period['label']}}
+                    </a>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
             </div>
           </div>
         </div>
