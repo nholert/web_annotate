@@ -191,7 +191,6 @@ class User(UserMixin):
                 'accessed_at': timestamp,
                 'created_user_agent': agent,
                 'round': 2,
-                'start_date': START_DATE,
                 'last_user_agent': agent,
                 'login_ips': [ip_addr],
                 'login_timestamps': [timestamp],
