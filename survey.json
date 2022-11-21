@@ -245,7 +245,7 @@
     {
         "title": "Political Knowledge: Congress",
         "key": "knowledge_cong",
-        "question": "Which political party currently controls Congress?",
+        "question": "Which political party will control Congress as a result of this month's election?",
         "type": "category",
         "categories": [
             "Republicans control both chambers",
@@ -257,7 +257,7 @@
     {
         "title": "Political Knowledge: Governor",
         "key": "knowledge_gov",
-        "question": "Which political party is your state Governor a member of?",
+        "question": "Which political party is your Governor (or Governor elect if you just had an election) a member of?",
         "type": "category",
         "categories": [
             "Republican",
@@ -269,7 +269,7 @@
     {
         "title": "Political Knowledge: State Legislature",
         "key": "knowledge_sl",
-        "question": "Which political party currently controls your state legislature?",
+        "question": "Which political party will control your state legislature as a result of the election?",
         "type": "category",
         "categories": [
             "Republicans control both chambers",
@@ -333,5 +333,21 @@
         "question": "What is your email? (To send you your money upon completion of the calendar section)",
         "detail": "You MUST complete the following calendar sections in order recieve any reward.",
         "type": "email"
+    },
+    {
+        "title": "",
+        "key": "alive",
+        "question": "Just so we know you're not a robot and are paying attention, please select the one item below that is alive.",
+        "detail": "",
+        "type": "category",
+        "categories": [
+            "Desk",
+            "Airplane",
+            "Rock",
+            "Pencil",
+            "Eagle",
+            "Mountain",
+            "Football"
+        ]
     }
 ]

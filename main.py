@@ -20,6 +20,8 @@ st: {
     18: termination
     30: dedupe
     20: quality
+    
+    
 }
 transaction_id: user.get_id() or token
 """
@@ -289,6 +291,10 @@ def survey_page_index():
         if 'Financial Dependent' in answer:
             current_user.set_answer(key,answer)
             return redirect(session['terminate'])
+    elif 'alive' in key:
+        if 'eagle' not in answer.lower():
+            current_user.set_answer(key,answer)
+            return redirect(session['quality'])
     index = int(index) + 1
     duration = time.time()-float(request.form.get('start_time',None))
     current_user.set_answer(key,answer,duration)
