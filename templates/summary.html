@@ -149,21 +149,20 @@
         </div>
       </div>
       <div id="mapping" class="section">
-        <title class="title"># to transaction_id:</title>
+        <span class="title"># to transaction_id:</span>
         <div class="block">
           {% for user in users %}
-            <div class="column is-full">
-              {{loop.index0}},{{user['token']}}
-            </div>
-            {%endif%}
+          <div class="column is-full">
+            {{loop.index0}},{{user['token']}}
           </div>
-          {% endfor %}
         </div>
+        {% endfor %}
       </div>
     </div>
-    <div class="fab">
-      <a class="" href="#toc"><span class="button is-link is-light">↑ Table of Contents</span></a>
-    </div>
+  </div>
+  <div class="fab">
+    <a class="" href="#toc"><span class="button is-link is-light">↑ Table of Contents</span></a>
+  </div>
 </body>
 
 </html>
