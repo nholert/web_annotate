@@ -109,6 +109,10 @@ class User(UserMixin):
         user = mongo.db.users.find_one({'token': self.token})
         return user is not None and 'consented' in user and user['consented']
     
+    def is_terminated(self):
+        user = mongo.db.users.find_one({'token': self.token})
+        return user is not None and 'terminated' in user and user['terminated']    
+    
     def set_old(self,is_old=True):
         update = {"$set": { 'is_old': is_old } }
         mongo.db.users.update_one({'token': self.token},update)
@@ -116,6 +120,9 @@ class User(UserMixin):
     def is_old(self):
         user = mongo.db.users.find_one({'token': self.token})
         return user is not None and 'is_old' in user and user['is_old']
+    
+    def get_token(self):
+        return self.token
     
     def get_id(self):
         return self.token
@@ -167,6 +174,7 @@ class User(UserMixin):
         session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
         session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
         session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
+        session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
         logged_in = User.login_user(token)
         if logged_in:
             return redirect('/')
@@ -216,6 +224,18 @@ class User(UserMixin):
         else:
             return False
         return True
+    def get_terminate_redirect(self):
+        token = self.get_token()
+        return f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={token}"
+    def get_finish_redirect(self):
+        token = self.get_token()
+        return f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={token}"
+    def get_quality_redirect(self):
+        token = self.get_token()
+        return f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={token}"
+    def get_dedupe_redirect(self):
+        token = self.get_token()
+        return f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={token}"
 
 
 @login_manager.user_loader
@@ -271,7 +291,8 @@ def survey_page_index():
     index = request.form.get('index',None)
     key = request.form.get('key',None)
     answer = request.form.get('answer',None)
-    
+    if current_user.is_terminated():
+        return redirect(current_user.get_dedupe_redirect())
     #Check if malformed response
     if index is None or answer is None or answer is None:
         return {'error': "Something went wrong with your survey!","index": index,"key":key,"answer":answer}
@@ -286,14 +307,17 @@ def survey_page_index():
         current_user.set_old(int(answer)>=18)
         if int(answer) < 18:
             current_user.set_answer(key,answer)
+            current_user.set_answer('terminated',True)
             return redirect(session['terminate'])
     elif 'head_of_house' in key:
         if 'Financial Dependent' in answer:
             current_user.set_answer(key,answer)
+            current_user.set_answer('terminated',True)
             return redirect(session['terminate'])
     elif 'alive' in key:
         if 'eagle' not in answer.lower():
             current_user.set_answer(key,answer)
+            current_user.set_answer('terminated',True)
             return redirect(session['quality'])
     index = int(index) + 1
     duration = time.time()-float(request.form.get('start_time',None))
@@ -441,6 +465,7 @@ def validate_user(user):
                 "data": calendar_variance
                 }
     return no_error
+    
         
         
 
