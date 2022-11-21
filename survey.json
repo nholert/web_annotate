@@ -335,7 +335,7 @@
         "type": "email"
     },
     {
-        "title": "",
+        "title": "Alive",
         "key": "alive",
         "question": "Just so we know you're not a robot and are paying attention, please select the one item below that is alive.",
         "detail": "",
