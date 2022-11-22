@@ -496,13 +496,16 @@ def summary_stats():
         del user['_id']
         user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i)) for i,cal in enumerate(calendar)]
         user['validation'] = validate_user(user)
+        payout={}
         if 'payout' not in user: 
             completed_everything_but_not_finished += 1
-            continue
-        payout=user['payout']
-        payout['early_label'] = calendar[payout['col']]['early_label']
-        payout['late_label'] = calendar[payout['col']]['late_label']
-        payout['bad'] = False
+            payout['missing'] = True
+        else:   
+            payout=user['payout']
+            payout['missing'] = False
+            payout['early_label'] = calendar[payout['col']]['early_label']
+            payout['late_label'] = calendar[payout['col']]['late_label']
+            payout['bad'] = False
         try:
             payout['early_payout'] = f"${float(payout['early_tokens'])*float(payout['early_rate'])/100:.02f}"
             payout['late_payout'] = f"${float(payout['late_tokens'])*float(payout['late_rate'])/100:.02f}"

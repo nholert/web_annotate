@@ -114,7 +114,10 @@
                   {% endfor %}
                   <div class="column is-narrow has-text-centered">
                     <label class="label">Payout</label>
-                    {% if user['payout']['bad'] %}
+                    
+                    {% if user['payout']['missing'] %}
+                    <span>Payout is missing!<br>This person does not seem to have clicked the finish button!</span>
+                    {% elif user['payout']['bad'] %}
                     <span>Payout is bad!<br>This person should be removed for quality.</span>
                     {% else %}
                     <span>On {{user['payout']['early_label']}} pay {{user['payout']['early_tokens']}} tokens at
