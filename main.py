@@ -486,6 +486,7 @@ def summary_stats():
     completed = completed_calendar | {'consented': True, 'is_old': True, 'completed_survey': True}
     total_completed = mongo.db.users.count_documents(completed)
     completed_users = mongo.db.users.find(completed)
+    completed_everything_but_not_finished = 0 
     durations = []
     users = []
     total_completed_without_error = 0
@@ -495,7 +496,9 @@ def summary_stats():
         del user['_id']
         user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i)) for i,cal in enumerate(calendar)]
         user['validation'] = validate_user(user)
-        if 'payout' not in user: continue
+        if 'payout' not in user: 
+            completed_everything_but_not_finished += 1
+            continue
         payout=user['payout']
         payout['early_label'] = calendar[payout['col']]['early_label']
         payout['late_label'] = calendar[payout['col']]['late_label']
@@ -518,6 +521,7 @@ def summary_stats():
         'total_completed_calendar': total_calendar,
         'total_completed_everything': total_completed, 
         'total_completed_without_error': total_completed_without_error,
+        'completed_everything_but_not_finished': completed_everything_but_not_finished,
         'durations': durations,
         'users': users
     }
