@@ -430,9 +430,6 @@ def get_user_tokens(progress,index):
 def validate_user(user):
     if 'tokens' not in user:
             user['tokens'] = [(cal['early_label'],cal['late_label'],get_user_tokens(user, i)) for i,cal in enumerate(calendar)]
-
-    if 'payout' not in user:
-        return {'error': True,'key': 'invalid_calendar','message': 'Missing payout; They did not hit finish!', "submessage": "There may also be missing token allocations."}
     all_calendars = [cal for e,l,cal in user['tokens']]
     no_error = {"error": False, "message": "Valid data", "data": None}
     calendar_variance = []
