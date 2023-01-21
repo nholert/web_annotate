@@ -44,14 +44,19 @@ const options = {
     endDate:  new Date(late_date),
     startDate: new Date(early_date),
     date: new Date(late_date),
+    surveyDate: new Date(survey_date)
 };
+
 const calendars = bulmaCalendar.attach('[type="date"]', options);
-if (options.startDate.getMonth()==10){
+
+if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
+    //Starting the calendar on the survey date
     $(".datepicker-nav-next","#second-calendar").click()
     $(".datepicker-nav-next","#third-calendar").click().click()
     $(".datepicker-nav-next","#fourth-calendar").click().click().click()
     $(".datepicker-nav-next","#fifth-calendar").click().click().click().click()
-}else{
+}else if(options.startDate.getMonth()<options.surveyDate.getMonth()){
+    //The starting date is before the survey date? 
     $(".datepicker-nav-previous","#first-calendar").click()
     $(".datepicker-nav-next","#second-calendar")
     $(".datepicker-nav-next","#third-calendar").click()
@@ -77,6 +82,9 @@ const all_empty = ()=>{
     return is_empty
 }
 const validate_form = ()=>{
+    if (calendar_enabled){
+        return true
+    }
     const msg = "Please fill out all token fields before changing pages."
     let alerted = false
     $("input[type=number]").each((i,e)=>{

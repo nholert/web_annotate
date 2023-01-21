@@ -50,7 +50,8 @@ login_manager.login_message = u"Bonvolu ensaluti por uzi tiun paĝon."
 csrf = CSRFProtect(app)
 
 survey = json.load(open('survey.json'))
-START_DATE = datetime.date(2022,11,22)
+calendar_instructions = json.load(open('calendar_instructions.json'))
+START_DATE = datetime.date(2023,1,30)
 def process_calendar_data():
     data = json.load(open('calendar.json'))
     #start_date = datetime.date(2022,10,25) #Round 1
@@ -127,6 +128,17 @@ class User(UserMixin):
     def get_id(self):
         return self.token
     
+    #TODO: Rewrite previous getting keys to use the get_key function for coupling.
+    def get_key(self,key):
+        user = mongo.db.users.find_one({'token': self.token})
+        return user is not None and key in user and user[key]
+    
+    def get_read_calendar_instructions(self):
+        return self.get_key('read_calendar_instructions')
+    
+    def set_read_calendar_instructions(self):
+        return self.set_answer('read_calendar_instructions',True)
+    
     def set_answer(self,key,answer,duration=-1):
         update = {
                     "$set": {
@@ -149,7 +161,9 @@ class User(UserMixin):
         user = mongo.db.users.find_one({'token': self.token})
         return sum([d for key,d in user.items() if 'duration' in key and d!=-1])
     
+    #Defines the completion of a calendar page
     def set_discount(self,index,form,duration):
+        if not self.get_read_calendar_instructions(): return
         print(list(form))
         date = calendar[index]
         answers = {}
@@ -324,21 +338,54 @@ def survey_page_index():
     current_user.set_answer(key,answer,duration)
     if index == len(survey):
         current_user.completed_survey()
-        return redirect('/calendar/instructions')
+        return redirect('/calendar')
     progress = f'{round(index/len(survey)*100)}%'
     start=time.time()
     return render_template('question.html',progress=progress,index=index,start=start,**survey[index])
 
-
+"""
+Decisions
+Tokens Left and Right
+Lines and Values
+Tabs and Dates
+Navigation and Submitting
+Payment
+Example
+"""
 @app.route('/calendar/instructions',methods=["GET"])
-def calendar_instructions():
+def goto_calendar_instructions():
     return render_template('calendar_instructions.html')
-
 
 
 @app.route('/calendar/<int:index>',methods=["GET"])
 def goto_date(index):
     session['calendar_index'] = index
+    return redirect('/calendar')
+
+
+@app.route('/calendar/instruction/next',methods=["GET"])
+@login_required
+def next_cal_instruction():
+    index = session.get('calendar_instruction_index',0)
+    index += 1
+    session['calendar_instruction_index'] = index
+    if index >= len(calendar_instructions)-1:
+        #Completed calendar instructions
+        current_user.set_read_calendar_instructions()
+    return redirect('/calendar')
+
+@app.route('/calendar/instruction/prev',methods=["GET"])
+@login_required
+def previous_cal_instruction():
+    index = session.get('calendar_instruction_index',0)
+    index = (index-1)%len(calendar_instructions)
+    session['calendar_instruction_index'] = index
+    return redirect('/calendar')
+
+@app.route('/calendar/instruction/<int:index>',methods=["GET"])
+@login_required
+def set_cal_instruction(index):
+    session['calendar_instruction_index'] = index
     return redirect('/calendar')
 
 
@@ -367,10 +414,12 @@ def submit_calendar_page():
     
     
 def process_calendar(index):  
+    calendar_enabled = current_user.get_read_calendar_instructions()
+    calendar_instruction_index = session.get('calendar_instruction_index',0)
     index = int(index)%len(calendar)
     date = calendar[index]
     
-     #General Progress
+    #General Progress
     progress = current_user.get_progress()
     completed_count = sum([1 for key,value in progress.items() if "completed_calendar_" in key and value==True])
     progress['percentage'] = f'{completed_count/len(calendar):2.0%}'
@@ -382,7 +431,7 @@ def process_calendar(index):
     user_tokens = get_user_tokens(progress,index) if this_calender_is_completed else {}
     
     start = time.time()
-    return render_template('calendar.html',user_tokens=user_tokens,progress=progress,start_time=start,index=index,calendar=calendar,completed=completed,**date)
+    return render_template('calendar.html',user_tokens=user_tokens,progress=progress,calendar_enabled=calendar_enabled,survey_date=START_DATE,start_time=start,index=index,calendar=calendar,completed=completed,calendar_instructions=calendar_instructions,calendar_instruction_index=calendar_instruction_index,**date)
 
 
 @app.route(f'/completed',methods=['GET','POST'])
