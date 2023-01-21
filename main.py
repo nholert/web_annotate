@@ -51,7 +51,7 @@ csrf = CSRFProtect(app)
 
 survey = json.load(open('survey.json'))
 calendar_instructions = json.load(open('calendar_instructions.json'))
-START_DATE = datetime.date(2023,1,30)
+START_DATE = datetime.date(2023,1,31)
 def process_calendar_data():
     data = json.load(open('calendar.json'))
     #start_date = datetime.date(2022,10,25) #Round 1
