@@ -59,7 +59,7 @@
         {% set instruction = calendar_instructions[calendar_instruction_index] %}
         <article class="message is-info is-expanded">
           <div class="message-header">
-            Calendar Instruction: {{instruction['title']}}
+            <span>Calendar Instruction: {{instruction['title']}}</span><span style="float: right">[{{calendar_instruction_index+1}}/{{calendar_instructions|length}}]</span>
           </div>
           <div class="block message-body">
             <div class="message-instruction">

@@ -245,11 +245,11 @@
     {
         "title": "Political Knowledge: Congress",
         "key": "knowledge_cong",
-        "question": "Which political party will control Congress as a result of this month's election?",
+        "question": "Which political party currently controls Congress as a result of the most recent election?",
         "type": "category",
         "categories": [
             "Republicans control both chambers",
-            "Democrats control both chamebrs",
+            "Democrats control both chambers",
             "Split with each controlling one chamber",
             "I do not know"
         ]
@@ -269,7 +269,7 @@
     {
         "title": "Political Knowledge: State Legislature",
         "key": "knowledge_sl",
-        "question": "Which political party will control your state legislature as a result of the election?",
+        "question": "Which political party currently controls your state legislature as a result of the most recent election?",
         "type": "category",
         "categories": [
             "Republicans control both chambers",

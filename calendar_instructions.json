@@ -12,10 +12,6 @@
         "text": "Each tab has 5 lines. Each line gives you a different value for tokens allocated to the early date (left box). The value of the tokens allocated to the later date (right box) is always 20 cents.\nFor each decision you get a new set of 50 tokens.\nThe program does the multiplication for you, showing the totals for each date based on your current choices."
     },
     {
-        "title": "Lines and Values",
-        "text": "Each tab has 5 lines. Each line gives you a different value for tokens allocated to the early date (left box). The value of the tokens allocated to the later date (right box) is always 20 cents.\nFor each decision you get a new set of 50 tokens.\nThe program does the multiplication for you, showing the totals for each date based on your current choices."
-    },
-    {
         "title": "Tabs and Dates",
         "text": "There are nine tabs, listed above the calendars. Each tab has a different set of early and late payment dates. The tab currently selected is highlighted in blue and shows the early date is January 31st (today) and the later date is February 28th.\nThe calendars help you visualize when you would receive the money. The early and late dates are circled with the interval in between highlighted. Today's date is lightly circled."
     },
