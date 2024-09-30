@@ -578,6 +578,8 @@ def summary_stats():
         'users': users
     }
     return render_template('summary.html',survey=survey,calendar=calendar,**summmary)
-
+"""
 if __name__=="__main__":
     app.run(host='0.0.0.0',port='8976',debug=True)
+"""
+
