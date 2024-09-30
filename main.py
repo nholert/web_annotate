@@ -46,6 +46,7 @@ print(f"MongoDB URI: {app.config['MONGO_URI']}")
 
 mongo = PyMongo(app)
 
+@app.before_first_request
 def check_db_connection():
     try:
         mongo.db.command("ping")  # Check if MongoDB is reachable
