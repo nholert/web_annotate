@@ -42,8 +42,16 @@ app.config['MONGO_DBNAME'] = 'annotation'
 
 app.config['LOGIN_URL'] = "/login"
 
+print(f"MongoDB URI: {app.config['MONGO_URI']}")
+
 mongo = PyMongo(app)
 
+def check_db_connection():
+    try:
+        mongo.db.command("ping")  # Check if MongoDB is reachable
+        print("MongoDB connection successful.")
+    except Exception as e:
+        print(f"MongoDB connection failed: {e}")
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_message = u"Bonvolu ensaluti por uzi tiun paĝon."
