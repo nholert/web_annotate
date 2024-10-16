@@ -1,7 +1,7 @@
 from werkzeug.middleware.proxy_fix import ProxyFix
 import json,os,hashlib,datetime,time,logging
 import flask,requests,uuid,datetime,random,statistics
-from flask import Blueprint,Flask,request,redirect,render_template,session,flash,abort,make_response
+from flask import Blueprint,Flask,request,redirect,render_template,session,flash,abort,make_response, url_for
 from flask_pymongo import PyMongo
 from flask_wtf.csrf import CSRFProtect
 from flask_login import LoginManager,login_required,login_user,UserMixin,current_user
@@ -42,21 +42,14 @@ app.config['MONGO_DBNAME'] = 'annotation'
 
 app.config['LOGIN_URL'] = "/login"
 
-print(f"MongoDB URI: {app.config['MONGO_URI']}")
-
 mongo = PyMongo(app)
 
-@app.before_first_request
-def check_db_connection():
-    try:
-        mongo.db.command("ping")  # Check if MongoDB is reachable
-        print("MongoDB connection successful.")
-    except Exception as e:
-        print(f"MongoDB connection failed: {e}")
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_message = u"Bonvolu ensaluti por uzi tiun paĝon."
 csrf = CSRFProtect(app)
+
+print(f"MongoDB URI: {app.config['MONGO_URI']}")
 
 survey = json.load(open('survey.json'))
 calendar_instructions = json.load(open('calendar_instructions.json'))
@@ -194,10 +187,10 @@ class User(UserMixin):
     def login():
         token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
         session['token'] = token
-        session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
-        session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
-        session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
-        session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
+        session['terminate'] = url_for('last_page')
+        session['finish'] = url_for('finish_page')
+        session['quality'] = url_for('quality_page')
+        session['dedupe'] = url_for('dedupe_page')
         logged_in = User.login_user(token)
         if logged_in:
             return redirect('/')
@@ -249,18 +242,32 @@ class User(UserMixin):
         return True
     def get_terminate_redirect(self):
         token = self.get_token()
-        return f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={token}"
+        return url_for('last_page', transaction_id=token)
     def get_finish_redirect(self):
         token = self.get_token()
-        return f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={token}"
+        return url_for('final_page', transaction_id=token)
     def get_quality_redirect(self):
         token = self.get_token()
-        return f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={token}"
+        return url_for('quality_page', transaction_id=token)
     def get_dedupe_redirect(self):
         token = self.get_token()
-        return f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={token}"
+        return url_for('dedupe_page', transaction_id=token)
 
+@app.route('/last_page')
+def terminate_page():
+    return render_template('last_page.html')  
 
+@app.route('/final_page')
+def final_page():
+    return render_template('final_page.html')  # Create finish.html
+
+@app.route('/quality_page')
+def quality_page():
+    return render_template('quality.html')  # Create quality.html
+
+@app.route('/dedupe_page')
+def dedupe_page():
+    return render_template('dedupe.html')  # Create dedupe.html
 @login_manager.user_loader
 def load_user(username):
     return User(username)
@@ -314,8 +321,8 @@ def survey_page_index():
     index = request.form.get('index',None)
     key = request.form.get('key',None)
     answer = request.form.get('answer',None)
-    if current_user.is_terminated():
-        return redirect(current_user.get_dedupe_redirect())
+    #if current_user.is_terminated():
+        #return redirect(current_user.get_dedupe_redirect())
     #Check if malformed response
     if index is None or answer is None or answer is None:
         return {'error': "Something went wrong with your survey!","index": index,"key":key,"answer":answer}
@@ -331,17 +338,17 @@ def survey_page_index():
         if int(answer) < 18:
             current_user.set_answer(key,answer)
             current_user.set_answer('terminated',True)
-            return redirect(session['terminate'])
+            return redirect(url_for('last_page'))
     elif 'head_of_house' in key:
         if 'Financial Dependent' in answer:
             current_user.set_answer(key,answer)
             current_user.set_answer('terminated',True)
-            return redirect(session['terminate'])
+            return redirect(url_for('last_page'))
     elif 'alive' in key:
         if 'eagle' not in answer.lower():
             current_user.set_answer(key,answer)
             current_user.set_answer('terminated',True)
-            return redirect(session['quality'])
+            return redirect(url_for('quality_page')) #should be quality
     index = int(index) + 1
     duration = time.time()-float(request.form.get('start_time',None))
     current_user.set_answer(key,answer,duration)
@@ -453,7 +460,7 @@ def completed_calendar():
     validation = validate_user(progress)
     current_user.set_answer('validation',validation)
     if validation['error'] and validation['key']=="invalid_calendar":
-        return redirect(session['quality'])
+        return redirect(url_for('quality_page'))
     elif completed:
         col = random.randint(0,len(calendar)-1)
         row = random.randint(0,len(calendar[col]['rates'])-1)
@@ -524,8 +531,16 @@ def validate_user(user):
                 }
     return no_error
     
-        
-        
+# new code 
+
+@app.route('/last_page', methods=['GET', 'POST'])
+def completed():
+    # Handle the completion of the survey here
+    return render_template('last_page.html')
+
+@app.route('/last_page')
+def last_page():
+    return render_template('last_page.html')
 
 @app.route(f'/{hidden_service}/test',methods=['GET'])
 def test_stats():
@@ -587,8 +602,8 @@ def summary_stats():
         'users': users
     }
     return render_template('summary.html',survey=survey,calendar=calendar,**summmary)
-"""
+
+
 if __name__=="__main__":
     app.run(host='0.0.0.0',port='8976',debug=True)
-"""
 
