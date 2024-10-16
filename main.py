@@ -188,7 +188,7 @@ class User(UserMixin):
         token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
         session['token'] = token
         session['terminate'] = url_for('last_page')
-        session['finish'] = url_for('finish_page')
+        session['finish'] = url_for('final_page')
         session['quality'] = url_for('quality_page')
         session['dedupe'] = url_for('dedupe_page')
         logged_in = User.login_user(token)
