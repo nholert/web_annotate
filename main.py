@@ -183,7 +183,7 @@ class User(UserMixin):
         
     @app.route('/login', methods=['GET'])
     def login():
-         token = request.args.get('transaction_id')
+        token = request.args.get('transaction_id')
         if token:
             logging.info(f"Transaction ID retrieved: {token}")
         else:
