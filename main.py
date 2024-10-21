@@ -228,7 +228,7 @@ class User(UserMixin):
                 'user_agents': [agent]
             })
             login_user(User(token))
-        elif password == user['password']:
+        else:
             mongo.db.users.update_one({'token': token},{
                 '$push': {
                     'login_ips': ip_addr,
