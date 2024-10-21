@@ -183,7 +183,12 @@ class User(UserMixin):
         
     @app.route('/login', methods=['GET'])
     def login():
-        token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
+         token = request.args.get('transaction_id')
+        if token:
+            logging.info(f"Transaction ID retrieved: {token}")
+        else:
+            logging.error("No Transaction ID provided.")
+        #token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
         session['token'] = token
         session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}" #updated
         session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}" #updated
