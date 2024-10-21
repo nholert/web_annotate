@@ -263,7 +263,7 @@ def unauthorized_callback():
 @app.route('/',methods=["GET"])
 @login_required
 def index():
-    return redirect('/login')
+    return redirect('/landing_page')
 
 @app.route('/landing',methods=["GET"])
 @login_required
