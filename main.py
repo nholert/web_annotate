@@ -263,28 +263,7 @@ def unauthorized_callback():
 @app.route('/',methods=["GET"])
 @login_required
 def index():
-    # Capture query parameters
-    transaction_id = request.args.get('transaction_id')
-    token = request.args.get('token')
-    bsec = request.args.get('bsec')
-    _k = request.args.get('_k')
-    _s = request.args.get('_s')
-
-    # Log full request URL and parameters
-    logging.info(f"Full request URL: {request.url}")
-    logging.info(f"Transaction ID: {transaction_id}, Token: {token}, Bsec: {bsec}, _k: {_k}, _s: {_s}")
-
-    # If no transaction_id is provided, log an error
-    if not transaction_id:
-        logging.error("No transaction_id provided.")
-        return "Transaction ID is missing", 400
-
-    # Store necessary data in session
-    session['transaction_id'] = transaction_id
-    session['token'] = token
-
-    # After processing, redirect the user to /landing
-    return redirect('/landing')
+    return redirect('/login')
 
 @app.route('/landing',methods=["GET"])
 @login_required
