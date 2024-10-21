@@ -12,8 +12,6 @@ from wtforms import validators
 from bson.objectid import ObjectId
 from urllib.parse import urlparse, urljoin
 from flask.sessions import SecureCookieSessionInterface
-import logging
-
 """
 Endpoint: https://spectrumsurveys.com/surveydone
 st: {
@@ -53,7 +51,7 @@ csrf = CSRFProtect(app)
 
 survey = json.load(open('survey.json'))
 calendar_instructions = json.load(open('calendar_instructions.json'))
-START_DATE = datetime.date(2024,10,22)
+START_DATE = datetime.date(2023,1,31)
 def process_calendar_data():
     data = json.load(open('calendar.json'))
     #start_date = datetime.date(2022,10,25) #Round 1
@@ -192,10 +190,10 @@ class User(UserMixin):
             logging.error("No Transaction ID provided.")
         #token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
         session['token'] = token
-        session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}" #updated
-        session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}" #updated
-        session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}" # updated
-        session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}" #updated
+        session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
+        session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
+        session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
+        session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
         logged_in = User.login_user(token)
         if logged_in:
             return redirect('/')
@@ -228,7 +226,7 @@ class User(UserMixin):
                 'user_agents': [agent]
             })
             login_user(User(token))
-        else:
+        elif password == user['password']:
             mongo.db.users.update_one({'token': token},{
                 '$push': {
                     'login_ips': ip_addr,
@@ -242,6 +240,8 @@ class User(UserMixin):
                 }
             })
             login_user(User(token))
+        else:
+            return False
         return True
     def get_terminate_redirect(self):
         token = self.get_token()
