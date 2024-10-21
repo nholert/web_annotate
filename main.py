@@ -198,7 +198,7 @@ class User(UserMixin):
         session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
         logged_in = User.login_user(token)
         if logged_in:
-            return redirect('/')
+            return redirect('/',transaction_id=token)
         else:
             return redirect('/login/failed')
 
