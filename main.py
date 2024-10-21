@@ -12,6 +12,8 @@ from wtforms import validators
 from bson.objectid import ObjectId
 from urllib.parse import urlparse, urljoin
 from flask.sessions import SecureCookieSessionInterface
+import logging
+
 """
 Endpoint: https://spectrumsurveys.com/surveydone
 st: {
