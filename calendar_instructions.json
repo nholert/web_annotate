@@ -1,30 +1,42 @@
 [
     {
-        "title": "Decisions",
-        "text": "This final section is the core of the experiment. We appreciate you for filling it out completely and with some thought. You will be asked to make a series of similar decisions. For those who complete all 45 decisions, we will randomly select one of your decisions and pay you based on the decision you made. You will make between $15 and $20 depending on your decision."
+        "title": "Final Section",
+        "text": "This final section is the core of the experiment. We appreciate you filling it out completely and with some thought. We know it will take your attention and consideration so we are trying to pay you well. Depending on your choices, you will earn between $15 and $20 for 5-10 minutes of time. Thank you for being conscientious."
     },
     {
-        "title": "Tokens Left and Right",
-        "text": "Each decision consists of allocating a total of 50 tokens between an early date (box on the left) and a later date (box on the right).\nEach line is a separate decision. Looking at the top line, you can see that for each token you allocate to the left box, you would be paid 19 cents on January 31st. For each token you allocate to the right box, you will be paid 20 cents, but not until February 28th."
+        "title": "45 Choices",
+        "text": "You will be asked to make a series of similar choices. For those who complete all 45 choices conscientiously, we will randomly select one of your decisions and pay you according to the choice you made. "
     },
     {
-        "title": "Lines and Values",
-        "text": "Each tab has 5 lines. Each line gives you a different value for tokens allocated to the early date (left box). The value of the tokens allocated to the later date (right box) is always 20 cents.\nFor each decision you get a new set of 50 tokens.\nThe program does the multiplication for you, showing the totals for each date based on your current choices."
+        "title": "Splitting Tokens",
+        "text": "The choices are organized into 9 different tabs. Each tab has five lines. Each line is a separate choice where you will be asked to split 50 tokens between the left and the right boxes."
+    },
+    {
+        "title": "Two Dates",
+        "text": "For each choice, you will be presented with two dates: an early date on the left that might be today or just a few weeks from now, and a later date on the right that is months in the future. We will pay you on both of the dates for whichever line is randomly selected for payment. But your choices will determine how much of that payment comes on the early date and how much is delayed until the later date."
+    },
+    {
+        "title": "Token Values",
+        "text": "You make this determination by splitting 50 tokens between the early date and the late date. Tokens put on the later date are always worth 20 cents each. Tokens put on the early date are worth less. How much less varies from line to line. The value is listed next to the box."
+    },
+    {
+        "title": "Lines and Token Values",
+        "text": "Each line is a separate decision. Looking at the top line, you can see that for each token you allocate to the left box, you would be paid 19 cents on October 22nd. For each token you allocate to the right box, you will be paid 20 cents, but not until November 22nd. Late tokens are always worth 20 cents each. The value for early tokens changes with each line."
+    },
+    {
+        "title": "Worth the Wait?",
+        "text": "It is for you to decide whether the higher value is worth the wait. You can put none, some, or all of the tokens at the early date. The program will automatically make sure the two boxes add up to 50 and it will automatically do the calculation to show how much money you would receive on each date based on your current choices if this line is selected."
     },
     {
         "title": "Tabs and Dates",
-        "text": "There are nine tabs, listed above the calendars. Each tab has a different set of early and late payment dates. The tab currently selected is highlighted in blue and shows the early date is January 31st (today) and the later date is February 28th.\nThe calendars help you visualize when you would receive the money. The early and late dates are circled with the interval in between highlighted. Today's date is lightly circled."
+        "text": "There are nine tabs, listed above the calendars. Each tab has a different set of early and late payment dates. The tab currently selected is highlighted in blue and shows the early date is January 31st (today) and the later date is February 28th. The calendars help you visualize when you would receive the money. The early and late dates are circled with the interval in between highlighted. Today's date is lightly circled."
     },
     {
-        "title": "Navigation and Submitting",
-        "text": "You can navigate back and forth between the tabs. When you are finished, click the button at the bottom to submit all of your decisions.\nYou must make a choice in all decisions before you can submit. We appreciate your taking this seriously and hope the money is worth a few moments of your attention"
+        "title": "Navigating and Submitting",
+        "text": "You can navigate back and forth between the tabs. When you are finished, click the button at the bottom to submit all of your decisions. You must make a choice in all decisions before you can submit. We appreciate your taking this seriously and hope the money is worth a few moments of your attention"
     },
     {
         "title": "Payment",
-        "text": "After you submit, one of your 45 lines will be chosen at random. You will be paid based on your choices for this line. You will also receive an extra $5 thank you on each of the two dates. This will be an amazon gift card emailed to the address you submitted.\nYour total across the two dates will be between $15 and $20.\nThe gift cards will be sent on the day in question. If the line selected for you includes today’s date, you will receive a gift card today. We have made all promised payments to earlier participants."
-    },
-    {
-        "title": "Example",
-        "text": "If the line selected at random was:\nEarly Date: January 31st, tokens worth 16 cents\nLate Date: February 28th, tokens worth 20 cents\nand you put 20 tokens in the early date and 30 tokens in the late date, then you would receive\nEarly Date: $5 thank you + 20 tokens * 16 cents/token = $8.20 today, January 31st.\nLate Date: $5 thank you + 30 tokens * 20 cents/token = $11 on February 28th"
-    }
+        "text": "After you submit, one of your 45 lines will be chosen at random. You will be paid based on your choices for this line. You will also receive an extra $5 thank you on each of the two dates. Payments will be Amazon gift cards emailed to the address you submitted. Your total across the two dates will be between $15 and $20. The gift cards will be sent on the day in question. If the line selected for you includes today’s date, you will receive a gift card today. We have made all promised payments to earlier participants. Thank you for your time."
+    }  
 ]
