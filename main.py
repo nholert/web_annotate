@@ -242,8 +242,6 @@ class User(UserMixin):
                 }
             })
             login_user(User(token))
-        else:
-            return False
         return True
     def get_terminate_redirect(self):
         token = self.get_token()
