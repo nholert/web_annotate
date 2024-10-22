@@ -217,16 +217,19 @@ class User(UserMixin):
     #Find user,then call login_user
     @staticmethod
     def login_user(token):
-        # Find the user by token (transaction_id)
         logging.error(f"Attempting to log in user with token: {token}")
-        user = mongo.db.users.find_one({'token': token})
+        try:
+            user = mongo.db.users.find_one({'token': token})
+        except Exception as e:
+            logging.error(f"MongoDB query failed: {str(e)}")
+            return False
+
         timestamp = datetime.datetime.now()
         ip_addr = get_ip()
         agent = request.headers.get('User-Agent')
 
         if user is None:
-            # Log that user was not found and a new user will be created
-            logging.error(f"User with token {token} not found. Creating a new user.")
+            logging.error(f"User with token {token} not found. Attempting to create a new user.")
             try:
                 mongo.db.users.insert_one({
                     'token': token,
@@ -241,13 +244,12 @@ class User(UserMixin):
                     'login_timestamps': [timestamp],
                     'user_agents': [agent]
                 })
-                login_user(User(token))  # Log in the new user
-                logging.error(f"New user with token {token} created and logged in.")
+                logging.error(f"New user with token {token} successfully created.")
             except Exception as e:
-                logging.error(f"Error while creating new user: {str(e)}")
+                logging.error(f"Failed to create user in MongoDB: {str(e)}")
                 return False
         else:
-            # Update the existing user with login details
+            logging.error(f"User with token {token} found. Attempting to update login details.")
             try:
                 mongo.db.users.update_one({'token': token}, {
                     '$push': {
@@ -261,11 +263,17 @@ class User(UserMixin):
                         'last_user_agent': agent
                     }
                 })
-                login_user(User(token))  # Log in the existing user
-                logging.error(f"User with token {token} logged in successfully.")
+                logging.error(f"User login details for token {token} successfully updated.")
             except Exception as e:
-                logging.error(f"Error while updating user login details: {str(e)}")
+                logging.error(f"Failed to update user login details in MongoDB: {str(e)}")
                 return False
+
+        try:
+            login_user(User(token))  # Assuming Flask-Login or similar
+            logging.error(f"User with token {token} successfully logged in.")
+        except Exception as e:
+            logging.error(f"Flask-Login login_user() failed: {str(e)}")
+            return False
 
         return True
         
