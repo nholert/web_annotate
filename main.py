@@ -191,10 +191,16 @@ class User(UserMixin):
             return {'error': 'Failed to login.'}, 400  # Ensure a 400 error is returned for missing token
 
         session['token'] = token
+        
         session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
         session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
         session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
         session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
+
+        logging.error(f"Terminate URL: {session['terminate']}")
+        logging.error(f"Finish URL: {session['finish']}")
+        logging.error(f"Quality URL: {session['quality']}")
+        logging.error(f"Dedupe URL: {session['dedupe']}")
 
     # Attempt login
         logged_in = User.login_user(token)
