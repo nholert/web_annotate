@@ -200,7 +200,7 @@ class User(UserMixin):
 
     # If login is successful, redirect to the next page (e.g., the survey page)
         logging.error(f"Login successful for user with token: {token}. Redirecting to next page.")
-        return redirect('/')  # Adjust to your desired post-login page
+        return redirect('/landing')  # Adjust to your desired post-login page
         """
         token = request.args.get('transaction_id')  # Ensure we always use the provided transaction_id
         if not token:
