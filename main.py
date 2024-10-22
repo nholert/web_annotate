@@ -217,40 +217,56 @@ class User(UserMixin):
     #Find user,then call login_user
     @staticmethod
     def login_user(token):
+        # Find the user by token (transaction_id)
+        logging.error(f"Attempting to log in user with token: {token}")
         user = mongo.db.users.find_one({'token': token})
         timestamp = datetime.datetime.now()
         ip_addr = get_ip()
         agent = request.headers.get('User-Agent')
+
         if user is None:
-            mongo.db.users.insert_one({
-                'token': token,
-                'created_ip': ip_addr,
-                'created_at': timestamp,
-                'accessed_ip': ip_addr,
-                'accessed_at': timestamp,
-                'created_user_agent': agent,
-                'round': 2,
-                'last_user_agent': agent,
-                'login_ips': [ip_addr],
-                'login_timestamps': [timestamp],
-                'user_agents': [agent]
-            })
-            login_user(User(token))
-        else: 
-            mongo.db.users.update_one({'token': token},{
-                '$push': {
-                    'login_ips': ip_addr,
-                    'login_timestamps': timestamp,
-                    'user_agents': agent
-                },
-                '$set': {
-                    'accessed_at': timestamp,
+            # Log that user was not found and a new user will be created
+            logging.error(f"User with token {token} not found. Creating a new user.")
+            try:
+                mongo.db.users.insert_one({
+                    'token': token,
+                    'created_ip': ip_addr,
+                    'created_at': timestamp,
                     'accessed_ip': ip_addr,
-                    'last_user_agent': agent
-                }
-            })
-            login_user(User(token))
-        
+                    'accessed_at': timestamp,
+                    'created_user_agent': agent,
+                    'round': 2,
+                    'last_user_agent': agent,
+                    'login_ips': [ip_addr],
+                    'login_timestamps': [timestamp],
+                    'user_agents': [agent]
+                })
+                login_user(User(token))  # Log in the new user
+                logging.error(f"New user with token {token} created and logged in.")
+            except Exception as e:
+                logging.error(f"Error while creating new user: {str(e)}")
+                return False
+        else:
+            # Update the existing user with login details
+            try:
+                mongo.db.users.update_one({'token': token}, {
+                    '$push': {
+                        'login_ips': ip_addr,
+                        'login_timestamps': timestamp,
+                        'user_agents': agent
+                    },
+                    '$set': {
+                        'accessed_at': timestamp,
+                        'accessed_ip': ip_addr,
+                        'last_user_agent': agent
+                    }
+                })
+                login_user(User(token))  # Log in the existing user
+                logging.error(f"User with token {token} logged in successfully.")
+            except Exception as e:
+                logging.error(f"Error while updating user login details: {str(e)}")
+                return False
+
         return True
         
     def get_terminate_redirect(self):
