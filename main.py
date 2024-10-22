@@ -236,7 +236,7 @@ class User(UserMixin):
                 'user_agents': [agent]
             })
             login_user(User(token))
-        elif password == user['password']:
+        else: 
             mongo.db.users.update_one({'token': token},{
                 '$push': {
                     'login_ips': ip_addr,
@@ -250,9 +250,9 @@ class User(UserMixin):
                 }
             })
             login_user(User(token))
-        else:
-            return False
+        
         return True
+        
     def get_terminate_redirect(self):
         token = self.get_token()
         return f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={token}"
