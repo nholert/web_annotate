@@ -201,6 +201,15 @@ class User(UserMixin):
         else:
             return redirect('/login/failed')
 
+    @app.route('/', methods=['GET'])
+    def root_redirect():
+    # If transaction_id is present in the root URL, redirect to /login with it
+        token = request.args.get('transaction_id')
+        if transaction_id:
+            logging.error(f"transaction_id found in root URL: {token}")
+            return redirect(f'/login?transaction_id={token}')
+        return redirect('/login')
+
     @app.route('/login/failed', methods=['GET'])
     def failed_login():
         return {'error': 'Failed to login.'}
