@@ -189,6 +189,7 @@ class User(UserMixin):
         session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
         session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
         session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
+        logging.error(f"Generated Finish Redirect URL: {session['finish']}")
         logged_in = User.login_user(token)
         if logged_in:
             return redirect('/')
