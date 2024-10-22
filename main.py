@@ -265,6 +265,7 @@ class User(UserMixin):
             try:
                 mongo.db.users.insert_one({
                     'token': token,
+                    'transaction_id': token,
                     'created_ip': ip_addr,
                     'created_at': timestamp,
                     'accessed_ip': ip_addr,
@@ -290,6 +291,7 @@ class User(UserMixin):
                         'user_agents': agent
                     },
                     '$set': {
+                        'transaction_id': token,
                         'accessed_at': timestamp,
                         'accessed_ip': ip_addr,
                         'last_user_agent': agent
