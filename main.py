@@ -205,7 +205,7 @@ class User(UserMixin):
     def root_redirect():
     # If transaction_id is present in the root URL, redirect to /login with it
         token = request.args.get('transaction_id')
-        if transaction_id:
+        if token:
             logging.error(f"transaction_id found in root URL: {token}")
             return redirect(f'/login?transaction_id={token}')
         return redirect('/login')
