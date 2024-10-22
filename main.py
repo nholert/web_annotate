@@ -183,7 +183,12 @@ class User(UserMixin):
         
     @app.route('/login', methods=['GET'])
     def login():
-        token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
+        token = request.args.get('transaction_id')  # Ensure we always use the provided transaction_id
+        if not token:
+        # Log and handle the error if no transaction_id is provided by Pure Spectrum
+            logging.error("No transaction_id provided by Pure Spectrum")
+            return {'error': 'Failed to login.'}
+        
         session['token'] = token
         session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
         session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
