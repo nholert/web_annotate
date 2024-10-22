@@ -183,6 +183,25 @@ class User(UserMixin):
         
     @app.route('/login', methods=['GET'])
     def login():
+        token = request.args.get('transaction_id')
+
+    # Check if transaction_id is missing
+        if not token:
+            logging.error("No transaction_id provided by Pure Spectrum")
+            return {'error': 'Failed to login.'}, 400  # Ensure a 400 error is returned for missing token
+
+    # Attempt login
+        logged_in = User.login_user(token)
+
+    # If login fails, return error response
+        if not logged_in:
+            logging.error(f"Login failed for user with token: {token}")
+            return {'error': 'Failed to login.'}, 400
+
+    # If login is successful, redirect to the next page (e.g., the survey page)
+        logging.error(f"Login successful for user with token: {token}. Redirecting to next page.")
+        return redirect('/')  # Adjust to your desired post-login page
+        """
         token = request.args.get('transaction_id')  # Ensure we always use the provided transaction_id
         if not token:
         # Log and handle the error if no transaction_id is provided by Pure Spectrum
@@ -200,7 +219,8 @@ class User(UserMixin):
             return redirect('/')
         else:
             return redirect('/login/failed')
-
+        """
+        
     @app.route('/', methods=['GET'])
     def root_redirect():
     # If transaction_id is present in the root URL, redirect to /login with it
