@@ -246,7 +246,7 @@ class User(UserMixin):
                 '$set': {
                     'accessed_at': timestamp,
                     'accessed_ip': ip_addr,
-                    'last_user_agent': user_agent
+                    'last_user_agent': agent
                 }
             })
             login_user(User(token))
