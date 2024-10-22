@@ -191,7 +191,7 @@ class User(UserMixin):
         session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
         logged_in = User.login_user(token)
         if logged_in:
-            return redirect('/landing_page')
+            return redirect('/')
         else:
             return redirect('/login/failed')
 
@@ -263,26 +263,6 @@ def unauthorized_callback():
 @app.route('/',methods=["GET"])
 @login_required
 def index():
-    # Capture query parameters from the URL
-    transaction_id = request.args.get('transaction_id')
-    token = request.args.get('token')
-    bsec = request.args.get('bsec')
-    _k = request.args.get('_k')
-    _s = request.args.get('_s')
-
-    # Log the parameters to verify they are captured
-    logging.info(f"Transaction ID: {transaction_id}, Token: {token}, Bsec: {bsec}, _k: {_k}, _s: {_s}")
-
-    # If any required parameter is missing, return an error
-    if not transaction_id or not token:
-        logging.error("Transaction ID or Token is missing.")
-        return "Transaction ID or Token is missing", 400
-
-    # Store the transaction_id and token in the session for later use
-    session['transaction_id'] = transaction_id
-    session['token'] = token
-
-    # Redirect the user to the landing page after processing
     return redirect('/landing')
 
 @app.route('/landing',methods=["GET"])
