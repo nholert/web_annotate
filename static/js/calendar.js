@@ -57,11 +57,10 @@ if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
     $(".datepicker-nav-next","#fifth-calendar").click().click().click().click()
 }else if(options.startDate.getMonth()<options.surveyDate.getMonth()){
     //The starting date is before the survey date? 
-    $(".datepicker-nav-previous","#first-calendar").click()
-    $(".datepicker-nav-next","#second-calendar")
-    $(".datepicker-nav-next","#third-calendar").click()
-    $(".datepicker-nav-next","#fourth-calendar").click().click()
-    $(".datepicker-nav-next","#fifth-calendar").click().click().click()
+    $(".datepicker-nav-next","#second-calendar").click()
+    $(".datepicker-nav-next","#third-calendar").click().click()
+    $(".datepicker-nav-next","#fourth-calendar").click().click().click()
+    $(".datepicker-nav-next","#fifth-calendar").click().click().click().click()
 }
 /*
 $(".datepicker-nav-next").each((i,e)=>{
