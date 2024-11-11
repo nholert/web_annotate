@@ -45,25 +45,30 @@ const options = {
 // Attach and configure each calendar instance
 const calendars = bulmaCalendar.attach('[type="date"]', options);
 
-// Programmatically set all calendars to start at surveyDate and display sequential months
+// Set each calendar to display sequential months starting from the surveyDate
 calendars.forEach((calendar, index) => {
-    let currentMonthDate = new Date(survey_date);
-    currentMonthDate.setMonth(currentMonthDate.getMonth() + index); // Increment month for each subsequent calendar
+    let initialDate = new Date(survey_date);
+    initialDate.setMonth(initialDate.getMonth() + index); // Increment the month for each calendar
 
-    // Programmatically set the initial displayed date for each calendar
-    calendar.options.date = currentMonthDate;
-    calendar.setDate(currentMonthDate); // Use setDate to programmatically display the desired month
+    // Set the display date for each calendar
+    calendar.options.defaultDate = initialDate;
+    calendar.value(initialDate); // Ensure the displayed month is set
 
     // Ensure unique highlighting with startDate and endDate
     calendar.options.startDate = new Date(early_date); // Replace with context-specific early_date
     calendar.options.endDate = new Date(late_date); // Replace with context-specific late_date
     calendar.refresh(); // Refresh the calendar to apply changes
+
+    // Fix tab interactivity issues by refreshing tabs when clicked
+    $(`#tab-${index}`).on('click', () => {
+        calendar.refresh();
+    });
 });
 
-// Ensure calendars are properly displayed on page load
+// Ensure calendars are displayed properly on page load
 window.addEventListener('DOMContentLoaded', () => {
     calendars.forEach(calendar => {
-        calendar.show(); // Ensure each calendar is rendered
+        calendar.show(); // Render each calendar
     });
 });
 
