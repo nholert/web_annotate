@@ -39,6 +39,9 @@ const options = {
     enableYearSwitch: false,
     displayMode: "inline",
     type: 'date',
+    endDate:  new Date(late_date),
+    startDate: new Date(early_date),
+    date: new Date(late_date),
     surveyDate: new Date(survey_date) // The date to start all calendars from
 };
 
