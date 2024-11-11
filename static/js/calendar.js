@@ -49,20 +49,29 @@ const options = {
 
 const calendars = bulmaCalendar.attach('[type="date"]', options);
 
-if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
-    //Starting the calendar on the survey date
-    $(".datepicker-nav-next","#second-calendar").click()
-    $(".datepicker-nav-next","#third-calendar").click().click()
-    $(".datepicker-nav-next","#fourth-calendar").click().click().click()
-    $(".datepicker-nav-next","#fifth-calendar").click().click().click().click()
-}else if(options.startDate.getMonth()<options.surveyDate.getMonth()){
-    //The starting date is before the survey date? 
-    $(".datepicker-nav-previous","#first-calendar").click()
-    $(".datepicker-nav-next","#second-calendar")
-    $(".datepicker-nav-next","#third-calendar").click()
-    $(".datepicker-nav-next","#fourth-calendar").click().click()
-    $(".datepicker-nav-next","#fifth-calendar").click().click().click()
-}
+// Update each calendar to start from surveyDate and display consecutive months
+calendars.forEach((calendar, index) => {
+    let currentMonthDate = new Date(survey_date);
+    currentMonthDate.setMonth(currentMonthDate.getMonth() + index); // Increment the month for each calendar
+
+    // Programmatically set the display date
+    calendar.options.date = currentMonthDate;
+    calendar.setDate(currentMonthDate); // Use setDate to set the displayed month
+
+    // Set specific startDate and endDate for each tab to highlight the correct range
+    calendar.options.startDate = new Date(early_date); // Replace with context-specific early_date
+    calendar.options.endDate = new Date(late_date); // Replace with context-specific late_date
+
+    // Refresh the calendar to apply the changes
+    calendar.refresh();
+});
+
+// Ensure calendars are displayed properly on page load
+window.addEventListener('DOMContentLoaded', () => {
+    calendars.forEach(calendar => {
+        calendar.show(); // Render each calendar
+    });
+});
 /*
 $(".datepicker-nav-next").each((i,e)=>{
     $(e).css('cursor','auto').css('z-index','-1')
