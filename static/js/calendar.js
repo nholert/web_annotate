@@ -42,8 +42,8 @@ const options = {
     displayMode: "inline",
     type: 'date',
     endDate:  new Date(late_date),
-    startDate: new Date('2024-11-19'),
-    date: new Date(2025-3-25),
+    startDate: new Date(early_date),
+    date: new Date(late_date),
     surveyDate: new Date(survey_date)
 };
 
