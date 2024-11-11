@@ -42,14 +42,14 @@ const options = {
     displayMode: "inline",
     type: 'date',
     endDate:  new Date(late_date),
-    startDate: new Date(early_date),
-    date: new Date(late_date),
+    startDate: new Date('2024-11-19'),
+    date: new Date(2025-3-25),
     surveyDate: new Date(survey_date)
 };
 
 const calendars = bulmaCalendar.attach('[type="date"]', options);
 
-/*
+
 if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
     //Starting the calendar on the survey date
     $(".datepicker-nav-next","#second-calendar").click()
@@ -64,7 +64,6 @@ if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
     $(".datepicker-nav-next","#fourth-calendar").click().click()
     $(".datepicker-nav-next","#fifth-calendar").click().click().click()
 }
-*/
 
 /*
 $(".datepicker-nav-next").each((i,e)=>{
