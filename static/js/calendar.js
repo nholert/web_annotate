@@ -49,6 +49,7 @@ const options = {
 
 const calendars = bulmaCalendar.attach('[type="date"]', options);
 
+/*
 if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
     //Starting the calendar on the survey date
     $(".datepicker-nav-next","#second-calendar").click()
@@ -63,6 +64,8 @@ if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
     $(".datepicker-nav-next","#fourth-calendar").click().click()
     $(".datepicker-nav-next","#fifth-calendar").click().click().click()
 }
+*/
+
 /*
 $(".datepicker-nav-next").each((i,e)=>{
     $(e).css('cursor','auto').css('z-index','-1')
