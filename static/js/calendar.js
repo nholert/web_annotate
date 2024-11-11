@@ -49,24 +49,6 @@ const options = {
 
 const calendars = bulmaCalendar.attach('[type="date"]', options);
 
-// Uniformly display all calendars starting from the same date
-const initialDisplayMonth = new Date(survey_date);
-initialDisplayMonth.setDate(1); // Ensure the date is set to the start of the month
-
-const calendars = bulmaCalendar.attach('[type="date"]', options);
-
-// Move calendars to start from the same month and display consecutive months
-calendars.forEach((calendar, index) => {
-    calendar.value(initialDisplayMonth); // Set each calendar to the initial display month
-
-    // Adjust subsequent calendars to display consecutive months
-    if (index > 0) {
-        for (let i = 0; i < index; i++) {
-            calendar.datePickerElements.navigation.nextButton.click();
-        }
-    }
-
-    /*
 if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
     //Starting the calendar on the survey date
     $(".datepicker-nav-next","#second-calendar").click()
@@ -81,7 +63,6 @@ if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
     $(".datepicker-nav-next","#fourth-calendar").click().click()
     $(".datepicker-nav-next","#fifth-calendar").click().click().click()
 }
-    */
 /*
 $(".datepicker-nav-next").each((i,e)=>{
     $(e).css('cursor','auto').css('z-index','-1')
