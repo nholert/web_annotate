@@ -47,35 +47,22 @@ const options = {
     surveyDate: new Date(survey_date)
 };
 
-
-// Attach and configure each calendar instance
 const calendars = bulmaCalendar.attach('[type="date"]', options);
 
-// Set all calendars to display starting at the survey date
-calendars.forEach((calendar, index) => {
-    // Set the initial display to start at the survey date
-    calendar.options.date = new Date(survey_date);
-    calendar.value(new Date(survey_date));
-
-    // Shift each calendar to show consecutive months after the survey date
-    if (index > 0) {
-        for (let i = 0; i < index; i++) {
-            calendar.datePickerElements.navigation.nextButton.click();
-        }
-    }
-
-    // Set specific startDate and endDate for highlighting unique dates for each tab
-    calendar.options.startDate = new Date(early_date); // Replace with tab-specific early_date
-    calendar.options.endDate = new Date(late_date); // Replace with tab-specific late_date
-    calendar.refresh(); // Apply changes and refresh the calendar display
-});
-
-// Ensure calendars are displayed on page load
-window.addEventListener('DOMContentLoaded', () => {
-    calendars.forEach(calendar => {
-        calendar.show(); // Ensure calendars render on page load
-    });
-});
+if (options.startDate.getMonth()>=options.surveyDate.getMonth()){
+    //Starting the calendar on the survey date
+    $(".datepicker-nav-next","#second-calendar").click()
+    $(".datepicker-nav-next","#third-calendar").click().click()
+    $(".datepicker-nav-next","#fourth-calendar").click().click().click()
+    $(".datepicker-nav-next","#fifth-calendar").click().click().click().click()
+}else if(options.startDate.getMonth()<options.surveyDate.getMonth()){
+    //The starting date is before the survey date? 
+    $(".datepicker-nav-previous","#first-calendar").click()
+    $(".datepicker-nav-next","#second-calendar")
+    $(".datepicker-nav-next","#third-calendar").click()
+    $(".datepicker-nav-next","#fourth-calendar").click().click()
+    $(".datepicker-nav-next","#fifth-calendar").click().click().click()
+}
 /*
 $(".datepicker-nav-next").each((i,e)=>{
     $(e).css('cursor','auto').css('z-index','-1')
