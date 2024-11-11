@@ -50,17 +50,19 @@ calendars.forEach((calendar, index) => {
     let initialDate = new Date(survey_date);
     initialDate.setMonth(initialDate.getMonth() + index); // Increment the month for each calendar
 
-    // Set the display date for each calendar
-    calendar.options.defaultDate = initialDate;
-    calendar.value(initialDate); // Ensure the displayed month is set
+    // Programmatically set the initial displayed date for each calendar
+    calendar.options.date = initialDate;
+    calendar.setDate(initialDate); // Ensure the displayed month is set
 
-    // Ensure unique highlighting with startDate and endDate
+    // Set the correct start and end date for highlighting specific ranges
     calendar.options.startDate = new Date(early_date); // Replace with context-specific early_date
     calendar.options.endDate = new Date(late_date); // Replace with context-specific late_date
-    calendar.refresh(); // Refresh the calendar to apply changes
 
-    // Fix tab interactivity issues by refreshing tabs when clicked
-    $(`#tab-${index}`).on('click', () => {
+    // Refresh the calendar to apply the highlighted start and end dates
+    calendar.refresh();
+
+    // Update the display for each calendar
+    calendar.on('select', () => {
         calendar.refresh();
     });
 });
