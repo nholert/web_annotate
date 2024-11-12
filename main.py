@@ -51,7 +51,7 @@ csrf = CSRFProtect(app)
 
 survey = json.load(open('survey.json'))
 calendar_instructions = json.load(open('calendar_instructions.json'))
-START_DATE = datetime.date(2024,11,19)
+START_DATE = datetime.date(2024, 11, 19)
 def process_calendar_data():
     data = json.load(open('calendar.json'))
     #start_date = datetime.date(2022,10,25) #Round 1
@@ -183,64 +183,17 @@ class User(UserMixin):
         
     @app.route('/login', methods=['GET'])
     def login():
-        token = request.args.get('transaction_id')
-
-    # Check if transaction_id is missing
-        if not token:
-            logging.error("No transaction_id provided by Pure Spectrum")
-            return {'error': 'Failed to login.'}, 400  # Ensure a 400 error is returned for missing token
-
-        session['token'] = token
-        
-        session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
-        session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
-        session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
-        session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
-
-        logging.error(f"Terminate URL: {session['terminate']}")
-        logging.error(f"Finish URL: {session['finish']}")
-        logging.error(f"Quality URL: {session['quality']}")
-        logging.error(f"Dedupe URL: {session['dedupe']}")
-
-    # Attempt login
-        logged_in = User.login_user(token)
-
-    # If login fails, return error response
-        if not logged_in:
-            logging.error(f"Login failed for user with token: {token}")
-            return {'error': 'Failed to login.'}, 400
-
-    # If login is successful, redirect to the next page (e.g., the survey page)
-        logging.error(f"Login successful for user with token: {token}. Redirecting to next page.")
-        return redirect('/landing')  # Adjust to your desired post-login page
-        """
-        token = request.args.get('transaction_id')  # Ensure we always use the provided transaction_id
-        if not token:
-        # Log and handle the error if no transaction_id is provided by Pure Spectrum
-            logging.error("No transaction_id provided by Pure Spectrum")
-            return {'error': 'Failed to login.'}
-        
+        token = request.args.get('transaction_id',request.args.get('token',str(uuid.uuid4())))
         session['token'] = token
         session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
         session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
         session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
         session['dedupe'] = f"https://spectrumsurveys.com/surveydone?st=30&transaction_id={session['token']}"
-        logging.error(f"Generated Finish Redirect URL: {session['finish']}")
         logged_in = User.login_user(token)
         if logged_in:
             return redirect('/')
         else:
             return redirect('/login/failed')
-        """
-        
-    @app.route('/', methods=['GET'])
-    def root_redirect():
-    # If transaction_id is present in the root URL, redirect to /login with it
-        token = request.args.get('transaction_id')
-        if token:
-            logging.error(f"transaction_id found in root URL: {token}")
-            return redirect(f'/login?transaction_id={token}')
-        return redirect('/login')
 
     @app.route('/login/failed', methods=['GET'])
     def failed_login():
@@ -249,68 +202,42 @@ class User(UserMixin):
     #Find user,then call login_user
     @staticmethod
     def login_user(token):
-        logging.error(f"Attempting to log in user with token: {token}")
-        try:
-            user = mongo.db.users.find_one({'token': token})
-        except Exception as e:
-            logging.error(f"MongoDB query failed: {str(e)}")
-            return False
-
+        user = mongo.db.users.find_one({'token': token})
         timestamp = datetime.datetime.now()
         ip_addr = get_ip()
         agent = request.headers.get('User-Agent')
-
         if user is None:
-            logging.error(f"User with token {token} not found. Attempting to create a new user.")
-            try:
-                mongo.db.users.insert_one({
-                    'token': token,
-                    'transaction_id': token,
-                    'created_ip': ip_addr,
-                    'created_at': timestamp,
-                    'accessed_ip': ip_addr,
+            mongo.db.users.insert_one({
+                'token': token,
+                'created_ip': ip_addr,
+                'created_at': timestamp,
+                'accessed_ip': ip_addr,
+                'accessed_at': timestamp,
+                'created_user_agent': agent,
+                'round': 2,
+                'last_user_agent': agent,
+                'login_ips': [ip_addr],
+                'login_timestamps': [timestamp],
+                'user_agents': [agent]
+            })
+            login_user(User(token))
+        elif password == user['password']:
+            mongo.db.users.update_one({'token': token},{
+                '$push': {
+                    'login_ips': ip_addr,
+                    'login_timestamps': timestamp,
+                    'user_agents': agent
+                },
+                '$set': {
                     'accessed_at': timestamp,
-                    'created_user_agent': agent,
-                    'round': 2,
-                    'last_user_agent': agent,
-                    'login_ips': [ip_addr],
-                    'login_timestamps': [timestamp],
-                    'user_agents': [agent]
-                })
-                logging.error(f"New user with token {token} successfully created.")
-            except Exception as e:
-                logging.error(f"Failed to create user in MongoDB: {str(e)}")
-                return False
+                    'accessed_ip': ip_addr,
+                    'last_user_agent': user_agent
+                }
+            })
+            login_user(User(token))
         else:
-            logging.error(f"User with token {token} found. Attempting to update login details.")
-            try:
-                mongo.db.users.update_one({'token': token}, {
-                    '$push': {
-                        'login_ips': ip_addr,
-                        'login_timestamps': timestamp,
-                        'user_agents': agent
-                    },
-                    '$set': {
-                        'transaction_id': token,
-                        'accessed_at': timestamp,
-                        'accessed_ip': ip_addr,
-                        'last_user_agent': agent
-                    }
-                })
-                logging.error(f"User login details for token {token} successfully updated.")
-            except Exception as e:
-                logging.error(f"Failed to update user login details in MongoDB: {str(e)}")
-                return False
-
-        try:
-            login_user(User(token))  # Assuming Flask-Login or similar
-            logging.error(f"User with token {token} successfully logged in.")
-        except Exception as e:
-            logging.error(f"Flask-Login login_user() failed: {str(e)}")
             return False
-
         return True
-        
     def get_terminate_redirect(self):
         token = self.get_token()
         return f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={token}"
