@@ -28,6 +28,16 @@ const convex_handle = (self)=>{
     $(`#${target_id}-result`).text(`\$${(target_rate * target.val()).toFixed(2)}`)
 }
 
+function formatDateToString(date) {
+    // Get the year, month, and day from the local date
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+const earlyDateStr = formatDateToString(new Date(early_date));
+const lateDateStr = formatDateToString(new Date(late_date));
 
 
 /* Calendar */
@@ -36,15 +46,15 @@ const options = {
     showHeader: false,
     showClearButton: false,
     showTodayButton: false,
-    isRange: true,
+    isRange: false, // Disable range selection to highlight only specific dates
     enableMonthSwitch: false,
     enableYearSwitch: false,
     displayMode: "inline",
     type: 'date',
-    endDate:  new Date(late_date),
-    startDate: new Date(early_date),
-    date: new Date(late_date),
-    surveyDate: new Date(survey_date)
+    date: new Date(late_date),  // Set default display date
+    startDate: new Date(early_date), // Optional: for validation purposes
+    surveyDate: new Date(survey_date), // Optional: if you need it for other logic
+    highlightedDates: [earlyDateStr, lateDateStr] // Highlight only early_date and late_date
 };
 
 const calendars = bulmaCalendar.attach('[type="date"]', options);
