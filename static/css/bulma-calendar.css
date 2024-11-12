@@ -317,7 +317,9 @@
               border-color: #fff !important;
               color: #fff !important; }
           .datetimepicker .datepicker-body .datepicker-dates .datepicker-days .datepicker-date .date-item.is-highlighted {
-            border: 0.1em solid #00d1b2; }
+              background-color: #00d1b2 !important; /* Changed highlight formatting */
+              color: black !important; 
+              border-radius: 50%;  }
           .datetimepicker .datepicker-body .datepicker-dates .datepicker-days .datepicker-date .date-item:hover {
             background: white;
             border: 0.1em solid #00d1b2;
