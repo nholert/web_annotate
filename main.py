@@ -63,7 +63,7 @@ def process_calendar_data():
         late_weeks = datetime.timedelta(weeks=int(period['late_start']))
         early = start_date + early_weeks
         late = start_date + late_weeks
-        
+
         early_label = early.strftime(fmt)
         late_label=late.strftime(fmt)
         days = round((late-early).total_seconds()/(60*60*24))
@@ -79,7 +79,7 @@ def process_calendar_data():
         })
     return data,calendar
 raw_calendar,calendar = process_calendar_data()
-        
+
 
 def get_ip():
     logging.error(str(request.environ))
@@ -101,44 +101,44 @@ class User(UserMixin):
     @staticmethod
     def is_anonymous():
         return False
-    
+
     def set_consent(self):
         update = {"$set": { 'consented': True } }
         mongo.db.users.update_one({'token': self.token},update)
-        
+
     def has_consent(self):
         user = mongo.db.users.find_one({'token': self.token})
         return user is not None and 'consented' in user and user['consented']
-    
+
     def is_terminated(self):
         user = mongo.db.users.find_one({'token': self.token})
         return user is not None and 'terminated' in user and user['terminated']    
-    
+
     def set_old(self,is_old=True):
         update = {"$set": { 'is_old': is_old } }
         mongo.db.users.update_one({'token': self.token},update)
-        
+
     def is_old(self):
         user = mongo.db.users.find_one({'token': self.token})
         return user is not None and 'is_old' in user and user['is_old']
-    
+
     def get_token(self):
         return self.token
-    
+
     def get_id(self):
         return self.token
-    
+
     #TODO: Rewrite previous getting keys to use the get_key function for coupling.
     def get_key(self,key):
         user = mongo.db.users.find_one({'token': self.token})
         return user is not None and key in user and user[key]
-    
+
     def get_read_calendar_instructions(self):
         return self.get_key('read_calendar_instructions')
-    
+
     def set_read_calendar_instructions(self):
         return self.set_answer('read_calendar_instructions',True)
-    
+
     def set_answer(self,key,answer,duration=-1):
         update = {
                     "$set": {
@@ -152,15 +152,15 @@ class User(UserMixin):
             "$set": {"completed_survey": True}
         }
         mongo.db.users.update_one({'token': self.token},update)
-        
+
     def get_progress(self):
         user = mongo.db.users.find_one({'token': self.token})
         return {key: value for key,value in user.items() if 'calendar' in key}
-    
+
     def get_total_duration(self):
         user = mongo.db.users.find_one({'token': self.token})
         return sum([d for key,d in user.items() if 'duration' in key and d!=-1])
-    
+
     #Defines the completion of a calendar page
     def set_discount(self,index,form,duration):
         if not self.get_read_calendar_instructions(): return
@@ -180,7 +180,7 @@ class User(UserMixin):
             } | answers
         }
         mongo.db.users.update_one({'token': self.token},update)
-        
+
     @app.route('/login', methods=['GET'])
     def login():
         token = request.args.get('transaction_id')
@@ -191,7 +191,7 @@ class User(UserMixin):
             return {'error': 'Failed to login.'}, 400  # Ensure a 400 error is returned for missing token
 
         session['token'] = token
-        
+
         session['terminate'] = f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={session['token']}"
         session['finish'] = f"https://spectrumsurveys.com/surveydone?st=21&transaction_id={session['token']}"
         session['quality'] = f"https://spectrumsurveys.com/surveydone?st=20&transaction_id={session['token']}"
@@ -232,7 +232,7 @@ class User(UserMixin):
         else:
             return redirect('/login/failed')
         """
-        
+
     @app.route('/', methods=['GET'])
     def root_redirect():
     # If transaction_id is present in the root URL, redirect to /login with it
@@ -245,7 +245,7 @@ class User(UserMixin):
     @app.route('/login/failed', methods=['GET'])
     def failed_login():
         return {'error': 'Failed to login.'}
-        
+
     #Find user,then call login_user
     @staticmethod
     def login_user(token):
@@ -310,7 +310,7 @@ class User(UserMixin):
             return False
 
         return True
-        
+
     def get_terminate_redirect(self):
         token = self.get_token()
         return f"https://spectrumsurveys.com/surveydone?st=18&transaction_id={token}"
@@ -383,7 +383,7 @@ def survey_page_index():
     #Check if malformed response
     if index is None or answer is None or answer is None:
         return {'error': "Something went wrong with your survey!","index": index,"key":key,"answer":answer}
-    
+
     #Key specific control code
     if 'zipcode' in key and len(answer.strip()) != 5:
         start_time = float(request.form.get('start_time',None))
@@ -479,30 +479,30 @@ def submit_calendar_page():
     if index is None or next_index is None:
         return {'error': "Something went wrong with your survey!","index": index,"next_index": next_index}
     duration = time.time()-float(request.form.get('start_time',None))
-    
+
     current_user.set_discount(int(index)%len(calendar),request.form,duration)
     index = int(next_index)
-    
+
     return process_calendar(index)
-    
-    
+
+
 def process_calendar(index):  
     calendar_enabled = current_user.get_read_calendar_instructions()
     calendar_instruction_index = session.get('calendar_instruction_index',0)
     index = int(index)%len(calendar)
     date = calendar[index]
-    
+
     #General Progress
     progress = current_user.get_progress()
     completed_count = sum([1 for key,value in progress.items() if "completed_calendar_" in key and value==True])
     progress['percentage'] = f'{completed_count/len(calendar):2.0%}'
     completed = completed_count >= len(calendar)
-    
+
     #Refreshing Users Progress
     calendar_name = f"completed_calendar_{index}"
     this_calender_is_completed = calendar_name in progress and progress[calendar_name]==True
     user_tokens = get_user_tokens(progress,index) if this_calender_is_completed else {}
-    
+
     start = time.time()
     return render_template('calendar.html',user_tokens=user_tokens,progress=progress,calendar_enabled=calendar_enabled,survey_date=START_DATE,start_time=start,index=index,calendar=calendar,completed=completed,calendar_instructions=calendar_instructions,calendar_instruction_index=calendar_instruction_index,**date)
 
@@ -573,7 +573,7 @@ def validate_user(user):
                         "message": "Invalid calendar data!",
                         "submessage": "Missing token allocations.",
                         }
-                        
+
         calendar_variance.append(statistics.variance(first_tokens)*statistics.variance(second_tokens))
     if sum([var < .01 for var in calendar_variance]) > 0:
         bad_calendars = [f'#{i} ' for i,var in enumerate(calendar_variance) if var<.01]
@@ -587,9 +587,9 @@ def validate_user(user):
                 "data": calendar_variance
                 }
     return no_error
-    
-        
-        
+
+
+
 
 @app.route(f'/{hidden_service}/test',methods=['GET'])
 def test_stats():
@@ -652,5 +652,6 @@ def summary_stats():
     }
     return render_template('summary.html',survey=survey,calendar=calendar,**summmary)
 
-if __name__=="__main__":
-    app.run(host='0.0.0.0',port='8976',debug=True)
+if __name__ == "__main__":
+    from waitress import serve  
+    serve(app, host="0.0.0.0", port=8976)
